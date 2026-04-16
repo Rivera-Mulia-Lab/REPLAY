@@ -33,8 +33,11 @@ analysis, while ensuring full reproducibility.
 **Quick start guide**
 
 REQUIREMENTS:
+
 10GB Memory
+
 x86-64 architecture
+
 
 1\. Download REPLAY
 
@@ -124,7 +127,7 @@ Using the GUI:
      
         The app will automatically check to see if the file naming is correct.
     
-10.  Copy or Link the Files
+10. Copy or Link the Files
 
         Pressing the "Copy" button will copy your files from the "Raw Reads Folder" to the "Pipeline Reads Folder"
      
