@@ -50,8 +50,8 @@ x86-64 architecture
 >
 > Install Windows Subsystem for Linux (WSL)
 > 
->     Can be installed through the Microsoft Store
->     or Open Command Prompt and type wsl --install
+> Can be installed through the Microsoft Store
+> or Open Command Prompt and type wsl --install
 > 
 > Run replay.bat
 > 
