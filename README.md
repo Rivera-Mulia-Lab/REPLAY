@@ -6,27 +6,20 @@ timing analysis from Repli-seq data**
 REPLAY is a fast, reproducible, and fully automated application for DNA
 replication timing analysis from Repli-seq data.
 
-REPLAY is distributed as a standalone executable application, allowing
-users to perform complete end-to-end analysis—from raw FASTQ files to
-genome-wide replication timing profiles—without coding, installing dependencies
-or using the command line.
+REPLAY is a standalone, end-to-end executable application designed to democratize Repli-seq analysis. By bridging a high-performance Snakemake/Apptainer backend with an intuitive PySide6 graphical interface, REPLAY allows researchers to transform raw FASTQ files into publication-quality RT profiles and diagnostic reports with a single click.
 
-Through an intuitive graphical interface, users can:
+Key features:
 
-- Select input and output directories
+- Zero-Installation: Standalone executable for Linux (Windows via WSL2 and macOS via virtualization). No manual environment setup required.
 
-- Choose the reference genome
+- End-to-End: Handles everything from raw zipped FASTQ processing (adapter trimming, alignment, filtering) to final smoothing and normalization.
 
-- Configure normalization (quantile, median, IQR)
+- Scientific Rigor: Integrated QC metrics to validate biological data fidelity.
 
-- Configure smoothing parameters (LOESS, Gaussian)
+- Reproducible: Encapsulated in Apptainer containers to ensure bit-wise identical results across different systems.
 
-- Generate RT profiles and quality metrics
+- Data normalization: Integrated strategies for RT profiles normalization  (quantile, IQR, median) and smoothing (LOESS, Gaussian) strategies.
 
-REPLAY integrates all processing steps, including quality control,
-trimming, alignment, binning, RT log2 calculation, normalization,
-smoothing, and generation of RT profiles ready visualization and
-analysis, while ensuring full reproducibility.
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
@@ -34,7 +27,7 @@ analysis, while ensuring full reproducibility.
 
 REQUIREMENTS:
 
-Processor (CPU): x86-64 architecture. Minimum 4 cores recommended. The Snakemake backend automatically parallelizes tasks based on available threads.
+Processor (CPU): x86-64 architecture. Minimum 2 cores. 6 cores or higher recommended. The Snakemake backend automatically parallelizes tasks based on available threads.
 
 Memory (RAM): 10 GB minimum. 32 GB or higher is recommended for processing large mammalian genomes (e.g., human or mouse) at high resolutions ($<10\text{ kb}$ bins).
 
@@ -64,8 +57,9 @@ Storage:
 > 
 > macOS:
 >
-> Download Parallels Desktop from the Mac App Store
+> Download VirtualBox, Lima, or Parallels Desktop from the Mac App Store and install linux distributions.
 > 
+> For Parallels:
 > Open Parallels Desktop and Click "+", Free Systems, Select Ubuntu, and Download
 > 
 > In the VM, navigate to the REPLAY folder and double-click REPLAY
@@ -97,7 +91,7 @@ Using the GUI:
 
 5.  Set Configuration: Genome and Analysis
     
-        Use buttons to download human and mouse genomes. This will take a moment.
+        Use buttons to download human and mouse genomes. This will take some minutes depending on the internet connection speed.
     
         Use Presets for each genome after they are downloaded.
     
@@ -155,15 +149,15 @@ Using the GUI:
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
-**Outputs**
+**Outputs and Diagnostics**
 
 REPLAY automatically generates:
 
 1.  Replication Timing Profiles
 
-    1.  Raw RT (log2 Early/Late)
+    1.  Raw RT (log2 Early/Late) in BedGraph format.
 
-    2.  Normalized and smoothed RT profiles
+    2.  Normalized and smoothed RT profiles in BedGraph format.
 
 2.  Quality Control Metrics
 
@@ -178,3 +172,8 @@ REPLAY automatically generates:
     5.  RT signal distributions (Raw and Normalized)
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
+**Citation**
+
+If you use REPLAY in your research, please cite our preprint:
+Dickinson, Q., Yu, C., Rivera-Mulia, J.C. REPLAY: A reproducible and user-friendly application for DNA replication timing analysis from Repli-seq data.
