@@ -137,6 +137,7 @@ Using the GUI:
      -Check on the status with the progress bar and by expanding the "Application Log"
      
 11. Analysis
+    
     -After running is complete, the "Results" tab will contain QC images for each sample and filepaths for the data.
 
 
