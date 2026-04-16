@@ -153,7 +153,7 @@ Using the GUI:
 
 REPLAY automatically generates:
 
-1.  Replication Timing Profiles
+1.  Replication Timing Profiles ready for visualization using the UCSC Genome Browser or IGV.
 
     1.  Raw RT (log2 Early/Late) in BedGraph format.
 
