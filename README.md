@@ -19,7 +19,7 @@ Through an intuitive graphical interface, users can:
 
 - Configure normalization (quantile, median, IQR)
 
-- Adjust smoothing parameters
+- Configure smoothing parameters (LOESS, Gaussian)
 
 - Generate RT profiles and quality metrics
 
@@ -34,9 +34,13 @@ analysis, while ensuring full reproducibility.
 
 REQUIREMENTS:
 
-10GB Memory
+Processor (CPU): x86-64 architecture. Minimum 4 cores recommended. The Snakemake backend automatically parallelizes tasks based on available threads.
 
-x86-64 architecture
+Memory (RAM): 10 GB minimum. 32 GB or higher is recommended for processing large mammalian genomes (e.g., human or mouse) at high resolutions ($<10\text{ kb}$ bins).
+
+Storage: 
+- Containers: ~1 GB for the Apptainer/Singularity image (downloaded once).
+- Data: Variable (depends on FASTQ size).
 
 
 1\. Download REPLAY
