@@ -1,0 +1,1794 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>libpng Home Page</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<!-- http://www.w3.org/TR/REC-CSS2/box.html -->
+<STYLE TYPE="text/css">
+  P { margin-bottom: 0em }
+  UL {
+    margin-bottom: 0em;
+    margin-top: 0em;
+    list-style: disc;
+  }
+  LI {
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
+  }
+</STYLE>
+
+<LINK REV="made" HREF="http://gregroelofs.com/greg_contact.html">
+<!--  Copyright (c) 2000-2026 Greg Roelofs.  -->
+</HEAD>
+
+
+<BODY BGCOLOR="#eeeeee" TEXT="#000000" VTEXT="#551a8b" ATEXT="#ff0000">
+
+<CENTER>
+<TABLE BORDER=1 CELLPADDING=15>
+  <TR>
+    <TD ALIGN="center" BGCOLOR="#ffddcc">
+      <FONT SIZE="+3"><B><TT>libpng</TT></B></FONT>
+    </TD>
+  </TR>
+</TABLE>
+</CENTER>
+
+<P>
+<B>libpng</B> is the official PNG reference library.  It supports almost
+all PNG features, is extensible, and has been extensively tested for
+over 30 years.  The home site for development versions (i.e., may be
+<!-- ^^^^^^^^^ since mid-1995:  UPDATE IN JUNE -->
+buggy or subject to change or include experimental features) is <A HREF=
+"https://libpng.sourceforge.io/index.html">https://libpng.sourceforge.io/</A>, and
+the place to go for questions about the library is the <A HREF=
+"pngmisc.html#lists"><B>png-mng-implement</B></A> mailing list.
+
+<P>
+libpng is available as ANSI C (C89) source code and requires <B>zlib 1.0.4</B>
+or later (<B>1.2.13</B> or later recommended for performance and security
+reasons).  The current public release, <B>libpng 1.6.57</B>, has another
+security fix, as noted immediately below.  Additionally, there's a fix for
+an integer overflow in the rowbytes computation, provided by Mohammad Seet.
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      All libpng releases since 1.0.9 are affected by the histogram part of this vulnerability:
+
+      <P>
+       <UL>
+         <LI> <A HREF="https://www.cve.org/CVERecord?id=CVE-2026-34757">CVE-2026-34757</A>
+              (medium severity): Use-after-free memory bug in the chunk setter API. The <B>hIST</B> 
+              variant has existed since version 1.0.9, but the <B>PLTE</B> and <B>tRNS</B> ones
+              are regressions introduced in the fix for <A HREF="https://www.cve.org/CVERecord?id=CVE-2026-33416"
+              >CVE-2026-33416</A> in 1.6.56 (oops). This was found by @Iv4n550.
+       </UL>
+
+      <P>
+      On the plus side, this bug affects only applications written with the relevant getter and
+      setter called in a particular sequence. (On the minus side, we don't know how many of those
+      might exist.)  It's fixed in version <B>1.6.57</B>, released on 8&nbsp;April 2026.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#8800cc">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Portability Note</FONT></B></CENTER></BR>
+      <FONT COLOR="#6600aa">
+      The libpng <!-- 1.5.x and --> 1.6.x <!-- , and upcoming 1.7.x --> series continues the evolution of the
+      libpng API, finally <B>hiding the contents</B> of the venerable
+      and hoary <B><TT>png_struct</TT></B> and <B><TT>png_info</TT></B>
+      data structures inside <B>private (i.e., non-installed) header
+      files</B>.  Instead of direct struct-access, applications should be
+      using the various <TT>png_get_xxx()</TT> and <TT>png_set_xxx()</TT>
+      accessor functions, which have existed for almost as long as libpng
+      itself.
+
+      <P>
+      libpng 2.0.x (formerly 1.8.x) has been under development for some time
+      now and <B>is planned to be the next release</B> (as of July 2025). As promised,
+      it eliminates some long-deprecated APIs and "features" and will require
+      a C99 compiler or later, breaking compatibility with very old apps.
+      It also adds support for APNG and other PNG-3 features.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+The portability notice should not come as a particular surprise
+to anyone who has added libpng support to an application this millenium; the
+manual has warned of it since at least July 2000.  (Specifically:
+<I>"Starting with version 2.0.0, both structures are going to be hidden, and
+the contents of the structures will only be accessible through the
+png_get/png_set functions."</I>  OK, so the version number was off a
+bit...and the grammar, too, but who's counting?)
+
+<P>
+The 1.5.x and later series also include a new, more thorough test program
+(<TT>pngvalid.c</TT>) and a new <TT>pnglibconf.h</TT> header file that
+tracks what features were enabled or disabled when libpng was built.  On
+the other hand, they no longer internally include the <TT>zlib.h</TT> header
+file, so applications that formerly depended on <TT>png.h</TT> to provide
+that will need to include it explicitly.  Complete differences relative to
+libpng 1.4.x are detailed <A HREF="src/libpng-1.4.x-to-1.5.x-summary.txt">here</A>.
+
+<!--
+ -->
+<!--  <I>NOTE: a bug in the configure build means there will be a 1.2.10
+release very shortly.</I> -->
+<!-- (and <B>libpng 1.0.18</B> on the old 1.0.x branch), -->
+<!-- fixes a crash bug in the previous two releases: -->
+<!-- has a new API (since 1.0.x) for dynamically
+enabling and disabling certain optimizations (currently limited to MMX
+code - which is compiled into
+GNU C versions only if PNG_THREAD_UNSAFE_OK is defined, due to the gcc
+code's use of static global variables to work around addressing limitations).
+As a consequence of this and some other changes, its <FONT COLOR="#000000">DLL
+ -->
+<!-- was dd0000 -->
+<!--
+and shared-library (.so) numbers were bumped from 2 to 3</FONT>.  (For an
+explanation of the issues with the Windows DLL versioning, see <A HREF=
+"http://home.att.net/~perlspinr/libversioning.html">this page</A>.)
+ -->
+
+<P>
+See the bottom of this page for warnings about
+<!--
+other
+ -->
+<FONT COLOR="#cc0000"><B>security and crash bugs</B></FONT>
+in versions up through <B>libpng 1.6.36</B>.
+<!-- (and <B>1.2.55</B>). -->
+
+<P>
+In addition to the main library sources, <!-- libpng includes -->
+all of the 1.2.x/1.4.x/1.5.x/1.6.x/1.7.x series include
+the <A HREF="book/sources.html">rpng, rpng2 and wpng</A> demo programs,
+the pngminus demo program, a subset of Willem van Schaik's
+<A HREF="http://www.schaik.com/pngsuite/">PngSuite test images</A>,
+and Willem's VisualPng demo program.
+
+
+
+
+<!-- ============================ 1.6.x SERIES ============================ -->
+<!-- ADDED 20100103; SWITCHED FROM 1.4.x TO 1.5.x 20110106 -->
+<!-- SWITCHED FROM 1.5.x TO 1.6.x 201xxxxx -->
+
+
+    <!-- 1.6.57 - REMINDER:  also update top of pngcode.html -->
+
+
+
+<P>
+<CENTER>
+<TABLE BORDER=1 CELLPADDING=15 WIDTH="86%">
+<!-- TABLE BORDER=1 CELLPADDING=15 -->
+
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ddffcc">
+      Current<BR>version:
+    </TD>
+    <TD ALIGN="center" BGCOLOR="#ffffcc">
+      <FONT SIZE="+1"><B>1.6.57</B></FONT>
+    </TD>
+  </TR>
+
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ddffcc">
+      Authors:
+    </TD>
+    <TD ALIGN="left" BGCOLOR="#ffffcc">
+      <A HREF="mailto:gschal@infinet.com">Guy&nbsp;Eric&nbsp;Schalnat</A>,
+      <A HREF="http://www-mddsp.enel.ucalgary.ca/People/adilger/"
+        >Andreas&nbsp;Dilger</A>,
+      John&nbsp;Bowler,
+      Glenn&nbsp;Randers-Pehrson,
+      <!-- was "http://www.rpi.edu/~randeg/" -->
+      <!-- was "http://www.glennrp.com/" -->
+      <!-- was "mailto:glennrp@users.sf.net" -->
+      <!-- UPDATED 20040515, 20190421 -->
+      <A HREF="https://sourceforge.net/u/cosmin/">Cosmin&nbsp;Truta</A>
+      <!-- UPDATED 20180724 -->
+        (current maintainer),
+      <A HREF="src/libpng-AUTHORS.txt">and&nbsp;others</A>
+      <!-- UPDATED 20040515, 20181202 -->
+    </TD>
+  </TR>
+
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ddffcc">
+      License:
+    </TD>
+    <TD ALIGN="left" BGCOLOR="#ffffcc">
+      <A HREF="src/libpng-LICENSE.txt">Open Source</A>
+    </TD>
+  </TR>
+
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ddffcc">
+      Platforms:
+    </TD>
+    <TD ALIGN="left" BGCOLOR="#ffffcc">
+      Unix, DOS, OS/2, Windows, Mac OS, BeOS, Amiga, etc.
+    </TD>
+  </TR>
+
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ddffcc">
+      README:
+    </TD>
+    <TD ALIGN="left" BGCOLOR="#ffffcc">
+      <A HREF="src/libpng-1.6.57-README.txt">local web site</A><BR>
+      <A HREF=
+        "http://www.libpng.org/pub/png/src/libpng-1.6.57-README.txt"
+        >http://www.libpng.org/pub/png/src/</A><BR>
+      <A HREF=
+        "http://prdownloads.sourceforge.net/libpng/README.md?download"
+        >http://prdownloads.sourceforge.net/libpng/</A><BR>
+<!--
+COMM  <A HREF=
+COMM    "ftp://ftp-osl.osuosl.org/pub/libpng/src/libpng16/libpng-1.6.57-README.txt"
+COMM    >ftp://ftp-osl.osuosl.org/pub/libpng/src/libpng16/</A><BR>
+ -->
+    </TD>
+  </TR>
+
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ddffcc">
+      Manual:
+    </TD>
+    <TD ALIGN="left" BGCOLOR="#ffffcc">
+         <!-- REMINDER:  copy libpng-manual.txt to libpng-1.6.57-manual.txt
+              and update libpng-manual.txt symlink -->
+      <A HREF="libpng-manual.txt">plain text format</A><BR><BR>
+      <A HREF="libpng-1.4.0-manual.pdf">PDF format</A> (version 1.4.0
+         [Jan 2010], courtesy of Alex Yau)<BR>
+    </TD>
+  </TR>
+
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ddffcc">
+      Mailing<BR>list:
+    </TD>
+    <TD ALIGN="left" BGCOLOR="#ffffcc">
+      <A HREF="pngmisc.html#lists"
+        >png-mng-implement</A>
+    </TD>
+  </TR>
+
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ddffcc">
+      Source<BR>code:
+    </TD>
+    <TD ALIGN="left" BGCOLOR="#ffffcc">
+
+      <TABLE BORDER=0 WIDTH="100%" CELLSPACING=0 CELLPADDING=0>
+        <TR>
+          <TD ALIGN="left">
+<!--
+COMM        <A HREF="src/"
+COMM          >local&nbsp;web&nbsp;site</A><BR>
+COMM        <A HREF="http://www.libpng.org/pub/png/src/"
+COMM          >www.libpng.org</A><BR>
+ -->
+            <A HREF="https://sourceforge.net/projects/libpng/files/"
+              >sourceforge.net</A><BR>
+            <!-- was "http://sourceforge.net/project/showfiles.php?group_id=5624"
+                 and prdownloads.sourceforge.net -->
+<!--
+COMM        <A HREF="ftp://swrinde.nde.swri.edu/pub/png/src/"
+COMM          >swrinde.nde.swri.edu</A><BR>
+COMM        <A HREF="ftp://ftp-osl.osuosl.org/pub/libpng/src/libpng16/"
+COMM          >ftp-osl.osuosl.org</A><BR>
+COMM        <A HREF="http://download.sourceforge.net/libpng/">
+COMM          download.sourceforge.net</A><BR>
+COMM        <A HREF="http://planetmirror.com/pub/sourceforge/libpng/"
+COMM          >planetmirror.com</A><BR>
+ -->
+            <I><B>archive&nbsp;sizes&nbsp;(bytes):</B></I><BR>
+          </TD>
+          <TD> &nbsp; </TD>
+          <TD ALIGN="center">
+            &nbsp;<A HREF=
+              "http://prdownloads.sourceforge.net/libpng/libpng-1.6.57.tar.xz?download"
+              >.tar.xz</A>&nbsp;<BR>
+<!--
+COMM        &nbsp;<A HREF=
+COMM          "ftp://ftp-osl.osuosl.org/pub/libpng/src/libpng16/libpng-1.6.57.tar.xz"
+COMM          >.tar.xz</A>&nbsp;<BR>
+ -->
+            &nbsp;<A HREF=
+              "https://download.sourceforge.net/libpng/libpng-1.6.57.tar.xz"
+              >.tar.xz</A>&nbsp;<BR>
+            &nbsp;<I>1069484</I>&nbsp;<BR>
+          </TD>
+          <TD ALIGN="center">
+            &nbsp;<A HREF=
+              "http://prdownloads.sourceforge.net/libpng/libpng-1.6.57.tar.gz?download"
+              >.tar.gz</A>&nbsp;<BR>
+<!--
+COMM        &nbsp;<A HREF=
+COMM          "ftp://ftp-osl.osuosl.org/pub/libpng/src/libpng16/libpng-1.6.57.tar.gz"
+COMM          >.tar.gz</A>&nbsp;<BR>
+ -->
+            &nbsp;<A HREF=
+              "https://download.sourceforge.net/libpng/libpng-1.6.57.tar.gz"
+              >.tar.gz</A>&nbsp;<BR>
+            &nbsp;<I>1581235</I>&nbsp;<BR>
+          </TD>
+          <TD ALIGN="center">
+            <!-- NOTE  1.6.57  NOTE:  also change 1657 strings below -->
+            &nbsp;<A HREF=
+              "http://prdownloads.sourceforge.net/libpng/lpng1657.zip?download"
+              >.zip</A>&nbsp;<BR>
+<!--
+COMM        &nbsp;<A HREF=
+COMM          "ftp://ftp-osl.osuosl.org/pub/libpng/src/libpng16/lpng1657.zip"
+COMM          >.zip</A>&nbsp;<BR>
+ -->
+            &nbsp;<A HREF=
+              "https://download.sourceforge.net/libpng/lpng1657.zip"
+              >.zip</A>&nbsp;<BR>
+            &nbsp;<I>1869602</I>&nbsp;<BR>
+            <!-- NOTE  1.6.57  NOTE:  also update all file sizes above -->
+          </TD>
+        </TR>
+      </TABLE>
+
+      <P>
+      <B><I>SHA-256 checksums:</I></B><PRE>
+01fdab044cdc575c74a9ef62a4042fbe24fea8bedfe8aa5c89f4467b781bbb60  libpng-1.6.57.tar.gz
+d10c20d7171569804cae8dfc13ba6dcd0662c41ed39d43d4d429314aafb10a80  libpng-1.6.57.tar.xz
+fa11e382323b1396bb98d0d8800bb3da33995c6bc6a11561a097056114c271dd  lpng1657.zip</PRE>
+    </TD>
+  </TR>
+
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ffccdd">
+      Beta<BR>code:
+    </TD>
+    <TD ALIGN="left" BGCOLOR="#ffeeee">
+      <A HREF="https://libpng.sourceforge.io/index.html"
+              >https://libpng.sourceforge.io/</A><BR>
+
+      <P>
+      <B><I>git repository:</I></B><BR>
+      <I><U>access</U></I>: &nbsp;
+        git://git.code.sf.net/p/libpng/code <BR>
+      <I><U>browse</U></I>: &nbsp; <A HREF=
+        "https://sourceforge.net/p/libpng/code/ci/libpng16/tree/"
+        >https://sourceforge.net/p/libpng/code/ci/libpng16/tree/</A>
+      <!-- was "http://libpng.git.sourceforge.net/git/gitweb.cgi?p=libpng" -->
+      <!-- NEW 20090402 -->
+      <!-- UPDATED 20130210:  new access URI (oops, changed a while back) -->
+      <!-- UPDATED 20130506:  new browse URI (oops, changed a while back) -->
+    </TD>
+  </TR>
+
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ddffcc">
+      Current<BR>binaries:
+    </TD>
+    <TD ALIGN="left" BGCOLOR="#ffffcc">
+
+      <TABLE BORDER=0 WIDTH="100%" CELLSPACING=1 CELLPADDING=0>
+        <TR>
+          <TD ALIGN="left" BGCOLOR="#ffffcc">
+            <I><B>operating&nbsp;system</B></I><BR>
+          </TD>
+          <TD ALIGN="left" BGCOLOR="#ffffcc">
+            <I><B>platform</B></I><BR>
+          </TD>
+          <TD ALIGN="left" BGCOLOR="#ffffcc">
+            <I><B>version</B></I><BR>
+          </TD>
+        </TR>
+        <TR>
+          <TD ALIGN="left">
+
+            <A HREF=
+              "https://slackware.osuosl.org/slackware-current/slackware/l/"
+              >Linux</A>&nbsp;(<A HREF=
+              "https://slackware.osuosl.org/slackware-current/slackware/l/libpng-1.6.57-i686-1.txz"
+              >.txz</A>)<BR>
+            <A HREF=
+              "https://slackware.osuosl.org/slackware64-current/slackware64/l/"
+              >Linux</A>&nbsp;(<A HREF=
+              "https://slackware.osuosl.org/slackware64-current/slackware64/l/libpng-1.6.57-x86_64-1.txz"
+              >.txz</A>)<BR>
+
+            <A HREF=
+              "http://hpux.connect.org.uk/hppd/cgi-bin/search?package=on&amp;term=libpng-"
+              >HP-UX</A><BR>
+              <!-- run by richard.lloyd/connectinternetsolutions.com -->
+              <!-- was 
+               "http://hpux.connect.org.uk/hppd/hpux/X11/Graphics/libpng-1.2.8/"
+               -->
+
+          </TD>
+          <!-- =========================================================== -->
+          <TD ALIGN="left">
+
+            x86<BR>
+            x86_64<BR>
+
+            PA-RISC,IA64<BR>
+
+          </TD>
+          <!-- =========================================================== -->
+          <TD ALIGN="left">
+
+            &nbsp;1.6.57-<BR>
+            &nbsp;1.6.57-<BR>
+
+            &nbsp;1.6.57-<BR>
+
+          </TD>
+        </TR>
+      </TABLE><BR>
+      <CENTER>
+<FONT SIZE="-1"><I>(these&nbsp;are&nbsp;"unofficial"&nbsp;binaries&nbsp;compiled&nbsp;&nbsp;by&nbsp;third&nbsp;parties)</I></FONT><BR>
+      </CENTER>
+
+    </TD>
+  </TR>
+
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ddffcc">
+      Older<BR>binaries<BR>(at time of<BR>update):
+    </TD>
+    <TD ALIGN="left" BGCOLOR="#ffffcc">
+
+      <TABLE BORDER=0 WIDTH="100%" CELLSPACING=1 CELLPADDING=0>
+        <TR>
+          <TD ALIGN="left" BGCOLOR="#ffffcc">
+            <I><B>operating&nbsp;system</B></I><BR>
+          </TD>
+          <TD ALIGN="left" BGCOLOR="#ffffcc">
+            <I><B>platform</B></I><BR>
+          </TD>
+          <TD ALIGN="left" BGCOLOR="#ffffcc">
+            <I><B>version</B></I><BR>
+          </TD>
+        </TR>
+        <TR>
+          <TD ALIGN="left">
+
+            <A HREF=
+              "https://packages.debian.org/search?keywords=libpng&amp;suite=default&amp;section=all&amp;arch=any&amp;searchon=names"
+              >Linux</A>&nbsp;(.deb)<BR>
+
+            <A HREF=
+              "https://rpm.pbone.net/index.php3/stat/3/srodzaj/2/search/libpng-1.6.5"
+              >Linux</A>&nbsp;(.rpm)&nbsp;(<A HREF=
+              "https://rpm.pbone.net/index.php3/stat/3/srodzaj/2/search/libpng-devel-1.6.5"
+              >dev</A>)<BR>
+
+            <A HREF=
+              "http://fink.sourceforge.net/pdb/search.php?summary=libpng"
+              >Mac&nbsp;OS&nbsp;X</A><BR>
+              <!-- NEW 20020420, UPDATED 20050918 -->
+
+<!--
+     other possible RPM sites:
+	http://dribble.org.uk/
+	http://freshrpms.net/
+	http://rpm.livna.org/
+		[first 3 will be merging into "rpmfusion"]
+	http://atrpms.net/
+	http://rpmforge.net/
+ -->
+<!--
+            <A HREF=
+              "http://rpmfind.net/linux/rpm2html/search.php?query=libpng16"
+              >Linux</A>&nbsp;(.rpm)<BR>
+            many<BR>	<!- - (x86, SPARC, Alpha, 68k, PPC, MIPS [others?]) - ->
+            &nbsp;1.6.19-<BR>
+ -->
+              <!-- connection timed out 20150405 -->
+              <!-- showing only two 1.6.8 results 20160116:  DUMPED -->
+<!-- BROKEN/UNREADABLE as of 20220914 (still as of 20230626)
+            <A HREF=
+              "http://distcache.freebsd.org/freebsd:14:x86:32/latest/All/"
+              >FreeBSD/i386</A>&nbsp;(<A HREF=
+              "http://distcache.freebsd.org/freebsd:14:x86:32/latest/All/png-1.6.37.txz"
+              >.txz</A>)<BR>
+            <A HREF=
+              "http://distcache.freebsd.org/freebsd:14:x86:64/latest/All/"
+              >FreeBSD/amd64</A>&nbsp;(<A HREF=
+              "http://distcache.freebsd.org/freebsd:14:x86:64/latest/All/png-1.6.37.txz"
+              >.txz</A>)<BR>
+ -->
+              <!-- was "ftp://ftp.freebsd.org/pub/FreeBSD/ports/i386/packages-stable/graphics/"
+                   and "ftp://ftp.freebsd.org/pub/FreeBSD/ports/amd64/packages-stable/graphics/" (and .tbz) -->
+              <!-- from Google search 20230626, these still exist, but date of latest (9.2) release is 20130903, so...
+                   "http://ftp-archive.freebsd.org/pub/FreeBSD-Archive/ports/amd64/packages-9.2-release/All/"
+                   "http://ftp-archive.freebsd.org/pub/FreeBSD-Archive/ports/amd64/packages-9.2-release/All/png-1.5.17.tbz"
+                   "http://ftp-archive.freebsd.org/pub/FreeBSD-Archive/ports/i386/" (20131216, sigh) -->
+
+          </TD>
+          <!-- =========================================================== -->
+          <TD ALIGN="left">
+
+            many<BR>
+
+            many<BR>	<!-- (x86, SPARC, Alpha, 68k, PPC, MIPS) -->
+
+            x86,PowerPC<BR>
+
+<!--
+            x86<BR>
+            x86_64<BR>
+ -->
+
+          </TD>
+          <!-- =========================================================== -->
+          <TD ALIGN="left">
+
+            &nbsp;1.6.56-<BR>
+
+            &nbsp;1.6.55-<BR>
+
+            &nbsp;1.6.54-<BR>
+
+<!--
+            &nbsp;
+ -->
+
+          </TD>
+        </TR>
+      </TABLE><BR>
+      <CENTER>
+<FONT SIZE="-1"><I>(these&nbsp;are&nbsp;"unofficial"&nbsp;binaries&nbsp;compiled&nbsp;&nbsp;by&nbsp;third&nbsp;parties)</I></FONT><BR>
+      </CENTER>
+
+    </TD>
+  </TR>
+
+<!--
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ddffcc">
+      Old<BR>binaries:
+    </TD>
+    <TD ALIGN="left" BGCOLOR="#ffffcc">
+
+      <TABLE BORDER=0 WIDTH="100%" CELLSPACING=1 CELLPADDING=0>
+        <TR>
+          <TD ALIGN="left" BGCOLOR="#ffffcc">
+            <I><B>operating&nbsp;system</B></I><BR>
+          </TD>
+          <TD ALIGN="left" BGCOLOR="#ffffcc">
+            <I><B>platform</B></I><BR>
+          </TD>
+          <TD ALIGN="left" BGCOLOR="#ffffcc">
+            <I><B>version</B></I><BR>
+          </TD>
+        </TR>
+        <TR>
+          <TD ALIGN="left">
+ -->
+
+<!--
+            <A HREF=
+              "http://ethan.tira-thompson.com/Mac_OS_X_Ports.html"
+              >Mac&nbsp;OS&nbsp;X</A><BR>
+            x86,x86_64<BR>
+            &nbsp;1.5.4-<BR>
+ -->
+              <!-- run by Ethan Tira-Thompson, ejt/cmu.edu -->
+              <!-- was "http://ethan.tira-thompson.com/Mac%20OS%20X%20Ports.html" -->
+              <!-- no change in YEARS:  DUMPED 20160116 -->
+
+<!--
+          </TD>
+          <! - =========================================================== - >
+          <TD ALIGN="left">
+
+          </TD>
+          <! - =========================================================== - >
+          <TD ALIGN="left">
+
+          </TD>
+        </TR>
+      </TABLE><BR>
+      <CENTER>
+<FONT SIZE="-1"><I>(these&nbsp;are&nbsp;"unofficial"&nbsp;binaries&nbsp;compiled&nbsp;&nbsp;by&nbsp;third&nbsp;parties)</I></FONT><BR>
+      </CENTER>
+
+    </TD>
+  </TR>
+ -->
+
+  <TR>
+    <TD ALIGN="left" BGCOLOR="#ddffcc">
+      Supporting<BR>libraries<BR>and tools:
+    </TD>
+    <TD ALIGN="left" BGCOLOR="#ffffcc">
+      <A HREF="http://www.zlib.net/"
+        ><B>zlib</B></A><BR>
+<!--
+        (also via
+COMM    <A HREF="ftp://ftp.info-zip.org/pub/infozip/zlib/zlib.html">ftp</A>)<BR>
+ -->
+      <A HREF="http://tukaani.org/xz/"
+        ><B>XZ</B></A> <FONT SIZE="-1"><I>(needed only to decompress tar.xz source archive)</I></FONT><BR>
+    </TD>
+  </TR>
+
+</TABLE>
+</CENTER>
+
+
+<!-- ============================ 1.2.x SERIES ============================ -->
+<!-- REMOVED 20160116 (1.4 was released in early 2010, 1.5 in early 2011, 1.6 in early 2013) -->
+
+<!-- ============================ 1.0.x SERIES ============================ -->
+<!-- REMOVED 20051122 (1.2 was released in September 2001) -->
+
+
+<PRE>
+
+
+</PRE>
+
+<P>
+<H3> Security and Crash Bugs in Older Versions </H3>
+
+	<!-- ALSO UPDATE "up through libpng 1.x.x" LINE AT TOP -->
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      All libpng releases through 1.6.55 are affected by the first of these vulnerabilities:
+
+      <P>
+      <UL>
+         <LI> <A HREF="https://www.cve.org/CVERecord?id=CVE-2026-33416">CVE-2026-33416</A>
+              (high severity): Use-after-free memory bug in the transparency and palette-handling code.
+              Similar to its predecessor <A HREF="https://www.cve.org/CVERecord?id=CVE-2026-25646">CVE-2026-25646</A>,
+              this latent bug has existed for 25 years. Both Halil Oktay and Ryo Shimada discovered it within
+              days of one another.
+         <LI> <A HREF="https://www.cve.org/CVERecord?id=CVE-2026-33636">CVE-2026-33636</A>
+              (high severity): Out-of-bounds read and write vulnerability in the ARM Neon palette-expansion 
+              code. This one was found and fixed by Taegu Ha and has existed since 1.6.36.
+      </UL>
+
+      <P>
+      These bugs are fixed in version <B>1.6.56</B>, released on 25&nbsp;March 2026.
+      Note that both can be triggered by <em>valid</em>, conformant PNG images, so 
+      users are encouraged to upgrade as soon as possible.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      All libpng releases through 1.6.54 have a recently discovered security vulnerability:
+
+      <P>
+      <UL>
+         <LI> <A HREF="https://www.cve.org/CVERecord?id=CVE-2026-25646">CVE-2026-25646</A>
+              (<B>high severity</B>): Heap buffer overflow in the low-level API function <TT>png_set_quantize()</TT>
+              (and its predecessor <TT>png_set_dither()</TT>) when called with no histogram and a palette
+              larger than twice the requested maximum number of colors. This latent bug has existed for
+              three decades, since at least the <B>0.90</B> beta (but probably <B>0.88</B> or <B>0.89</B>).
+      </UL>
+
+      <P>
+      This vulnerability is fixed in version <B>1.6.55</B>, released on 9&nbsp;February 2026.
+      Note that it affects <em>valid</em>, conformant PNG images (though only in applications
+      that reduce the number of colors, which is extremely rare these days).
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      libpng versions 1.6.26 through 1.6.53 have one or both of a pair of recently discovered
+      security vulnerabilities:
+
+      <P>
+      <UL>
+         <LI> <A HREF="https://www.cve.org/CVERecord?id=CVE-2026-22695">CVE-2026-22695</A>
+              (<B>moderate severity</B>): Heap buffer over-read in the libpng simplified API function
+              <TT>png_image_finish_read()</TT> when processing interlaced 16-bit PNGs with 8-bit
+              output format and non-minimal row stride. This is a regression introduced by the
+              fix for CVE-2025-65018 in libpng <B>1.6.51</B>.
+         <LI> <A HREF="https://www.cve.org/CVERecord?id=CVE-2026-22801">CVE-2026-22801</A>
+              (<B>moderate severity</B>): Integer truncation in the libpng simplified write API functions
+              <TT>png_write_image_16bit()</TT> and <TT>png_write_image_8bit()</TT> causes heap buffer
+              over-read when the caller provides a negative row stride (for bottom-up image layouts)
+              or a stride exceeding 65535 bytes. The bug was introduced in libpng <B>1.6.26</B>
+              (October 2016) by casts added to silence compiler warnings on 16-bit systems.
+      </UL>
+
+      <P>
+      These vulnerabilities are fixed in version <B>1.6.54</B>, released on 12&nbsp;January 2026.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      libpng versions 1.6.0 through 1.6.51 have a recently discovered security vulnerability:
+
+      <P>
+      <UL>
+        <LI> <A HREF="https://www.cve.org/CVERecord?id=CVE-2025-66293">CVE-2025-66293</A>
+             (<B>high severity</B>): out-of-bounds read in <TT>png_image_read_composite()</TT>
+             when processing palette PNG images with partial transparency and gamma correction
+      </UL>
+
+      <P>
+      This vulnerability is fixed in version <B>1.6.52</B>, released on 3&nbsp;December 2025.
+      Note that it affects <em>valid</em>, conformant PNG images: specifically, those with a
+      tRNS chunk containing partial alpha values (1-254) and a gAMA chunk when processed via
+      the simplified API with an output format without alpha and no explicit background color.
+      (To our knowledge, no web browsers use the simplified API, so they should not be affected.)
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      libpng versions 1.6.50 and earlier have several recently discovered security vulnerabilities:
+
+      <P>
+      <UL>
+        <LI> <A HREF="https://www.cve.org/CVERecord?id=CVE-2025-64505">CVE-2025-64505</A>
+             (<B>moderate severity</B>): Heap buffer overflow in <TT>png_do_quantize()</TT> via malformed palette index
+        <LI> <A HREF="https://www.cve.org/CVERecord?id=CVE-2025-64506">CVE-2025-64506</A>
+             (<B>moderate severity</B>): Heap buffer over-read in <TT>png_write_image_8bit()</TT> with 8-bit input and <TT>convert_to_8bit</TT> enabled
+        <LI> <A HREF="https://www.cve.org/CVERecord?id=CVE-2025-64720">CVE-2025-64720</A>
+             (<B>high severity</B>): Buffer overflow in <TT>png_image_read_composite()</TT> via incorrect palette premultiplication
+        <LI> <A HREF="https://www.cve.org/CVERecord?id=CVE-2025-65018">CVE-2025-65018</A>
+             (<B>high severity</B>): Heap buffer overflow in <TT>png_combine_row()</TT> triggered via <TT>png_image_finish_read()</TT>
+      </UL>
+
+      <P>
+      These vulnerabilities are fixed in version <B>1.6.51</B>, released on 21&nbsp;November 2025.
+      Many thanks to those who reported the issues (GitHub usernames Samsung-PENTEST,
+      weijinjinnihao, yosiimich) and those who helped triage/analyze/fix them
+      (Artiphishell's Fabio Gritti, our own John Bowler, and, of course, libpng
+      maintainer Cosmin Truta himself).
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      libpng versions 1.6.36 and earlier have a use-after-free bug in the simplified
+      libpng API <tt>png_image_free()</tt>.  It has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-7317"
+      >CVE-2019-7317</A>.
+      The vulnerability is fixed in version <B>1.6.37</B>,
+      released on 15&nbsp;April 2019.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      libpng version 1.6.31 added <TT>png_handle_eXIf()</TT>, which has a
+      null-pointer-dereference bug as well as a potential memory leak.  Insofar
+      as the function has existed for only four weeks and the chunk itself for
+      only six, it's unlikely there are any applications affected by it at this
+      time, but they might come into existence in the future.
+      The vulnerability is fixed in version <B>1.6.32</B>,
+      released on 24&nbsp;August 2017.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Virtually all libpng versions through 1.6.26, 1.5.27, 1.4.19, 1.2.56,
+      and 1.0.66, respectively, have a null-pointer-dereference bug in
+      <TT>png_set_text_2()</TT> when an image-editing application adds, removes,
+      and re-adds text chunks to a PNG image.  (This bug does <I>not</I> affect
+      pure viewers, nor are there any known editors that could trigger it without
+      interactive user input.  It has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-10087"
+      >CVE-2016-10087</A>.)
+      The vulnerability is fixed in versions <B>1.6.27</B>, <B>1.5.28</B>,
+      <B>1.4.20</B>, <B>1.2.57</B>, and <B>1.0.67</B>,
+      released on 29&nbsp;December 2016.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Virtually all <B>old-branch</B> libpng versions through 1.5.25, 1.4.18, 1.2.55,
+      and 1.0.65, respectively, have a potential out-of-bounds read in
+      <TT>png_check_keyword()</TT>, which has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-8540"
+      >CVE-2015-8540</A>).
+      The vulnerability is fixed in versions <B>1.5.26</B>,
+      <B>1.4.19</B>, <B>1.2.56</B>, and <B>1.0.66</B>,
+      released on 17&nbsp;December 2015.
+      </FONT>
+      The current branch (1.6.x) is <I>not</I> vulnerable to this bug.
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Virtually all libpng versions through 1.6.19, 1.5.24, 1.4.17, 1.2.54,
+      and 1.0.64, respectively, have a potential pointer overflow/underflow in
+      <TT>png_handle_sPLT()/png_handle_pCAL()</TT> (and in
+      <TT>png_handle_iTXt()/png_handle_zTXt()</TT> in the pre-1.6 branches),
+      and all such versions likewise have a bug in their <TT>png_set_PLTE()</TT>
+      implementations that left it open to the out-of-bounds write
+      (<A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-8126"
+      >CVE-2015-8126</A>) that was supposed to have been fixed in the previous
+      release.  The bugs are fixed in versions <B>1.6.20</B>,
+      <B>1.5.25</B>, <B>1.4.18</B>, <B>1.2.55</B>, and <B>1.0.65</B>,
+      released on 3&nbsp;December 2015.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Virtually all libpng versions through 1.6.18, 1.5.23, 1.4.16, 1.2.53,
+      and 1.0.63, respectively, have a potential out-of-bounds read in
+      <TT>png_set_tIME()/png_convert_to_rfc1123()</TT> and an out-of-bounds
+      write in <TT>png_get_PLTE()/png_set_PLTE()</TT>.  The former
+      vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-7981"
+      >CVE-2015-7981</A> and the latter
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-8126"
+      >CVE-2015-8126</A>.  The first is fixed in versions <B>1.6.19</B>,
+      <B>1.5.24</B>, <B>1.4.17</B>, <B>1.2.54</B>, and <B>1.0.64</B>,
+      released on 12&nbsp;November 2015; see the subsequent vulnerability
+      warning for info about the latter fix.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      libpng versions 1.6.9 through 1.6.15 (and some subset of versions up
+      through 1.5.20) have an integer-overflow vulnerability in
+      <TT>png_combine_row()</TT> when decoding very wide interlaced images,
+      which can allow an attacker to overwrite an arbitrary amount of memory
+      with arbitrary (attacker-controlled) data.
+      This vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-9495"
+      >CVE-2014-9495</A> and is fixed in versions <B>1.6.16</B> and
+      <B>1.5.21</B>, released on 21&nbsp;December 2014.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Virtually all libpng versions through 1.6.14, 1.5.19, 1.4.13, 1.2.51,
+      and 1.0.61, respectively, have an out-of-bounds memory access in
+      <TT>png_user_version_check()</TT>.  It is unclear whether this could
+      lead to an actual exploit.  The bug is fixed in versions <B>1.6.15</B>,
+      <B>1.5.20</B>, etc., released on 20&nbsp;November 2014.
+      <!--
+      This vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0333"
+      >CVE-2014-0333</A> and is fixed in version <B>1.6.10</B>,
+      released 6&nbsp;March 2014.
+       -->
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      libpng versions 1.6.0 through 1.6.9 hang when reading images that have
+      zero-length IDAT chunks with the progressive (streaming) reader; a
+      malicious web site could use this bug to cause a (minor) denial of
+      service. This vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0333"
+      >CVE-2014-0333</A> and is fixed in version <B>1.6.10</B>,
+      released 6&nbsp;March 2014.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      libpng versions 1.6.1 through 1.6.7 fail to reject colormapped images
+      with empty palettes, leading to a null-pointer dereference (crash) in
+      <TT>png_do_expand_palette()</TT>. This vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-6954"
+      >CVE-2013-6954</A> and is fixed in version <B>1.6.8</B>,
+      released 19&nbsp;December 2013.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Various versions of libpng through 1.5.11, 1.4.11, 1.2.49, and
+      1.0.59, respectively, set the top-level archive-extraction directory's
+      permissions to be world-writable as part of the <TT>distcheck</TT>
+      Makefile target's operations (<TT>configure</TT>-generated Makefile only).
+      This could allow a local attacker on the build host to silently replace
+      the extracted libpng library with a malicious version, conceivably
+      poisoning an official binary distribution of libpng (though the likelihood
+      of this seems remote), but more generally allowing the attacker to execute
+      arbitrary commands with the permissions of the user running make.  This
+      vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-3386"
+      >CVE-2012-3386</A> and is fixed in version <B>1.5.12</B> (and versions
+      <B>1.4.12</B>, <B>1.2.50</B>, and <B>1.0.60</B>, respectively, on the
+      older branches), released 10&nbsp;July 2012.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      All "modern" versions of libpng through 1.5.9, 1.4.10, 1.2.48, and
+      1.0.58, respectively, fail to correctly handle <TT>malloc()</TT> failure
+      for text chunks (in <TT>png_set_text_2()</TT>), which can lead to memory
+      corruption and the possibility of execution of hostile code.
+      This <B>serious vulnerability</B> has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3048"
+      >CVE-2011-3048</A> and is fixed in version <B>1.5.10</B> (and versions
+      <B>1.4.11</B>, <B>1.2.49</B>, and <B>1.0.59</B>, respectively, on the
+      older branches), released 29&nbsp;March 2012.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      All versions of libpng from 1.0.6 through 1.5.8, 1.4.8, 1.2.46, and
+      1.0.56, respectively, fail to correctly validate a heap allocation in 
+      <TT>png_decompress_chunk()</TT>, which can lead to a buffer-overrun
+      and the possibility of execution of hostile code on 32-bit systems.
+      This <B>serious vulnerability</B> has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3026"
+      >CVE-2011-3026</A> and is fixed in version <B>1.5.9</B> (and versions
+      <B>1.4.9</B>, <B>1.2.47</B>, and <B>1.0.57</B>, respectively, on the
+      older branches), released 18&nbsp;February 2012.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      libpng 1.5.4 through 1.5.7 contain a one-byte (stack) buffer-overrun bug
+      in <TT>png_formatted_warning()</TT>, which could lead to crashes (denial
+      of service) or, conceivably, execution of hostile code.  This
+      vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3464"
+      >CVE-2011-3464</A> and is fixed in version <B>1.5.8</B>, released
+      1&nbsp;February 2012.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      libpng 1.5.4 (only) introduced a divide-by-zero bug in
+      <TT>png_handle_cHRM()</TT>, which could lead to crashes (denial of
+      service) in applications that support color correction.  This
+      vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3328"
+      >CVE-2011-3328</A> (<A HREF="http://www.kb.cert.org/vuls/id/477046"
+      >CERT VU#477046</A>) and is fixed in version <B>1.5.5</B>, released
+      22&nbsp;September 2011.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      All released versions of libpng (from 1.0 onward) have a buffer overrun
+      in the code that promotes palette images with transparency (1 channel) to
+      grayscale+alpha images (2 channels), but only for applications that call
+      <TT>png_rgb_to_gray()</TT> and not <TT>png_set_expand()</TT>.  (None are
+      known.)  An arbitrary amount of memory may be overwritten in this case,
+      with arbitrary (attacker-controlled) data.
+      This vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-2690"
+      >CVE-2011-2690</A>.
+      <!-- https://bugzilla.redhat.com/show_bug.cgi?id=720607 -->
+
+      <P>
+      libpng 1.2.20 and later crashes in <TT>png_default_error()</TT> due to
+      internal use of a NULL pointer instead of the empty string ("").
+      This vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-2691"
+      >CVE-2011-2691</A>.
+      <!-- https://bugzilla.redhat.com/show_bug.cgi?id=720608 -->
+
+      <P>
+      Many (most?) versions of libpng read uninitialized memory when handling
+      empty sCAL chunks, and they handle malformed sCAL chunks (those lacking
+      a delimiting NULL between the internal strings) incorrectly.
+      This vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-2692"
+      >CVE-2011-2692</A>.
+      <!-- https://bugzilla.redhat.com/show_bug.cgi?id=720612 -->
+
+      <P>
+      All of these issues are fixed in version <B>1.5.4</B> (as well as
+      <B>1.4.8</B>, <B>1.2.45</B>, and <B>1.0.55</B> on the older branches),
+      released 7&nbsp;July 2011.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      libpng 1.5.0 (only) introduced a bug in the RGB-to-grayscale transform
+      code, which can lead to buffer overruns due to incorrect calculation
+      of the number of bytes per pixel.  (Since 1.5.0 was just released, no
+      apps or OS distributions are believed to ship with it, so the risk
+      should be minimal.)  This vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-0408"
+      >CVE-2011-0408</A> (<A HREF="http://www.kb.cert.org/vuls/id/643140"
+      >CERT VU#643140</A>) and is fixed in version <B>1.5.1</B>, released
+      3&nbsp;February 2011.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Several versions of libpng through 1.4.2 (and through 1.2.43 in the
+      older series) contain a bug whereby progressive applications such as
+      web browsers (or the rpng2 demo app included in libpng) could receive
+      an extra row of image data beyond the height reported in the header,
+      potentially leading to an out-of-bounds write to memory (depending on
+      how the application is written) and the possibility of execution of an
+      attacker's code with the privileges of the libpng user (including remote
+      compromise in the case of a libpng-based browser visiting a hostile web
+      site).  This vulnerability has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-1205"
+      >CVE-2010-1205</A> (via Mozilla).
+
+      <P>
+      An additional memory-leak bug, involving images with malformed sCAL
+      chunks, is also present; it could lead to an application crash (denial
+      of service) when viewing such images.
+
+      <P>
+      Both bugs are fixed in versions <B>1.4.3</B> and <B>1.2.44</B>, released
+      25&nbsp;June 2010.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Jeff Phillips reported that several versions of libpng through 1.2.35
+      contain an uninitialized-memory-read bug that may have security
+      implications.  Specifically, 1-bit (2-color) interlaced images whose
+      widths are not divisible by 8 may result in several uninitialized bits
+      at the end of certain rows in certain interlace passes being returned
+      to the user.  An application that failed to mask these out-of-bounds
+      pixels might display or process them, albeit presumably with benign
+      results in most cases.  This bug may be fixed in version <B>1.2.36</B>,
+      released 7&nbsp;May 2009, but the correct fix is in version <B>1.2.37</B>,
+      released 4&nbsp;June 2009.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      All versions of libpng from 0.89c through 1.2.34 contain an
+      uninitialized-data bug that can be triggered by a malicious user.
+      Specifically, there are several instances in which a malloc'd array
+      of pointers is then initialized by a secondary sequence of malloc()
+      calls.  If one of these calls fails, libpng's cleanup routine will
+      attempt to free the entire array, including any uninitialized pointers,
+      which could lead to execution of an attacker's code with the privileges
+      of the libpng user (including remote compromise in the case of a
+      libpng-based browser visiting a hostile web site).  This vulnerability
+      has been assigned ID
+      <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0040"
+      >CVE-2009-0040</A> and is fixed in version <B>1.2.35</B>, released
+      18&nbsp;February 2009.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Versions 1.2.30 and 1.2.31 of libpng can crash when reading images with
+      multiple zTXt chunks; it is likely that this vulnerability could lead to
+      a remote compromise in the case of a libpng-based browser visiting a
+      hostile web site.  This vulnerability has been assigned
+      ID <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-3964"
+      >CVE-2008-3964</A> and is fixed in version <B>1.2.32</B>, released
+      18&nbsp;September 2008.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      All versions of libpng from 1.0.6 through 1.2.26 have a bug when handling
+      unknown (to libpng) chunks with zero data length.  Applications that call
+      either <TT>png_set_read_user_chunk_fn()</TT> or
+      <TT>png_set_keep_unknown_chunks()</TT>, when used with standard builds
+      of libpng (i.e., built with either PNG_READ_UNKNOWN_CHUNKS_SUPPORTED or
+      PNG_READ_USER_CHUNKS_SUPPORTED defined), can crash when attempting to
+      free a non-existent data buffer for the unknown chunk.  The <B>pngtest</B>
+      sample application distributed with libpng, <B>pngcrush</B>, and certain
+      versions of <B>ImageMagick</B> are known to be affected, but the bug is
+      otherwise believed to be quite rare.  This vulnerability has been assigned
+      ID <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-1382"
+      >CVE-2008-1382</A> and is fixed in version <B>1.2.27</B>, released
+      28&nbsp;April 2008.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff7700">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Crash Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#000000">
+      Most versions of libpng up through 1.2.24 have a number of minor coding
+      errors that could lead to crashes in exceptional cases.  For example, if
+      memory allocation fails while processing certain ancillary chunks, libpng
+      could crash while attempting to write to the NULL pointer; or if the
+      application author failed to set up the <TT>info_ptr</TT> as required,
+      some parts of libpng fail to check for NULL and could crash trying to
+      read the pointer (though it's probable that the error would have caused
+      libpng to terminate upstream of these parts).  The bugs are fixed in
+      version <B>1.2.25</B>, released 18&nbsp;February 2008.
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Version 1.2.21 has a crash bug when reading the ICC-profile chunk, iCCP
+      (<A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5267"
+      >CVE-2007-5267</A>).  This bug is fixed in version <B>1.2.22</B>,
+      released 13&nbsp;October 2007.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Versions 1.2.20 and earlier have a number of potential crash-bugs due to
+      out-of-bounds reads in certain chunk-handlers; MITRE has collectively
+      assigned them the identifiers <A HREF=
+      "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5266"
+      >CVE-2007-5266</A>, <A HREF=
+      "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5268"
+      >CVE-2007-5268</A> and <A HREF=
+      "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5269"
+      >CVE-2007-5269</A>.  These bugs are fixed in version <B>1.2.21</B>,
+      released 4&nbsp;October 2007, but another crash bug (related to the
+      ICC-profile chunk) remains to be fixed in version <B>1.2.22</B>.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Versions up through 1.2.16 (and 1.0.24) have an NULL-pointer-dereference
+      vulnerability involving palette images with a malformed tRNS chunk (i.e.,
+      one with a bad CRC value).  This bug can, at a minimum, cause crashes in
+      browsers simply by visiting a page displaying such an image; reportedly
+      it also crashes the Microsoft Windows display manager.  CERT refers to
+      it as <A HREF="http://www.kb.cert.org/vuls/id/684664">VU#684664</A>
+      and MITRE as <A HREF=
+      "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-2445"
+      >CVE-2007-2445</A>.  It's fixed in versions <B>libpng 1.2.18</B> and
+      <B>libpng 1.0.26</B> (also <B>1.2.17</B> and <B>1.0.25</B>, which had a
+      bug in their configure scripts), released 15&nbsp;May 2007.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Versions 1.0.6 through 1.2.12 and 1.0.20 have a bug in the decoder for
+      the sPLT ("suggested palette") chunk; this can lead to crashes and,
+      accordingly, a denial of service (e.g., crashing your browser when you
+      visit a site displaying a specially crafted PNG).  The bug is fixed in
+      <B>libpng 1.2.13</B> and <B>libpng 1.0.21</B>, released 15&nbsp;November
+      2006.  MITRE refers to this bug as <A HREF=
+      "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-5793"
+      >CVE-2006-5793</A>.
+
+      <P>
+      The same releases also include fixes for a specific class of application
+      error (NULL png_ptr) and for a bug in the code that <I>writes</I> the
+      iCCP ("ICC profile") chunk.
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      Versions up through 1.2.11 and 1.0.19 have a buffer-overrun vulnerability
+      when a particular error message is triggered.  The overrun is always by
+      exactly two bytes ('k' and NULL) so it seems highly unlikely that it
+      could be used for anything more nefarious than denial of service (e.g.,
+      crashing your browser when you visit a site displaying a specially
+      crafted PNG).  Nevertheless, it's worth fixing, and versions <B>libpng
+      1.2.12</B> and <B>libpng 1.0.20</B>, released 27&nbsp;June 2006, do just
+      that.  (Note that 1.2.11 and 1.0.19 erroneously claimed to include the
+      fix, but in fact it had been inadvertently omitted.)  MITRE refers to
+      this bug as <A HREF=
+      "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-3334"
+      >CVE-2006-3334</A>.
+
+      <P>
+      The same releases (and their immediate predecessors) also fix an
+      out-of-bounds (by one) memory read and a second buffer overrun, this one
+      in the code that <I>writes</I> the sCAL ("physical scale of subject")
+      chunk (which is rather rare in any case).
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+There have been other issues in older versions released in 2004:
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff7700">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Crash Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#000000">
+      Versions 1.2.7, 1.2.6, 1.0.17, and 1.0.16 have a bug that will cause
+      applications that strip the alpha channel (while reading a PNG) to crash.
+      The bug is fixed in versions <B>1.2.8</B> and <B>1.0.18</B>, which were
+      released on 3&nbsp;December 2004.  MITRE refers to this bug as <A HREF=
+      "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-0481"
+      >CVE-2006-0481</A>.
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+The release before that fixed another bug, this one in the PNG-writing code:
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff7700">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Broken-Image Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#000000">
+      Versions 1.2.6 and 1.0.16 can write an invalid zlib header within the
+      PNG datastream.  This is not quite as bad as it sounds since the two-byte
+      header can be corrected fairly easily (e.g., use <A HREF=
+      "http://pmt.sf.net/pngcrush/">pngcrush</A> to rewrite the images and,
+      perhaps, compress them slightly better, or run the
+      <I>png-fix-IDAT-windowsize</I> utility bundled with <A HREF=
+      "apps/pngcheck.html">pngcheck</A> 2.1.0 or later), but some applications
+      will display the images incorrectly.  Microsoft Word and Internet
+      Explorer are known to be affected. A <A HREF=
+     "http://prdownloads.sourceforge.net/libpng/libpng-1.2.6-patch-pngwutil.txt"
+      >libpng patch</A> is available, and versions <B>1.2.7</B> and
+      <B>1.0.17</B> (incorporating the fix) were released on 11&nbsp;September
+      2004.
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+Finally--and most important--there were several security vulnerabilities
+present in versions of libpng prior to 1.2.6 and 1.0.16, one of which is
+<FONT COLOR="#dd0000"><B>quite dangerous</B></FONT>:
+
+<P>
+<TABLE ALIGN="center" WIDTH="80%" BORDER=0 CELLPADDING=5>
+  <TR BGCOLOR="#ff0000">
+    <TD>
+<TABLE WIDTH="100%" BORDER=0 CELLPADDING=8>
+  <TR BGCOLOR="#ffffff">
+    <TD>  <!-- ALIGN="center" -->
+      <CENTER><B><FONT COLOR="000000">Vulnerability Warning</FONT></B></CENTER></BR>
+      <FONT COLOR="#cc0000">
+      On 4&nbsp;August 2004 a new <B>jumbo security patch</B> was released to
+      address several potential vulnerabilities in libpng, at least one of
+      which is <I>quite serious</I>.  It was followed on 15&nbsp;August by
+      the full <B>libpng 1.2.6</B> and <B>libpng 1.0.16</B> releases, which,
+      like subsequent releases, incorporate the fix.  All users are strongly
+      urged to upgrade to the latest release of libpng or to patch any affected
+      applications as soon as possible.
+      <I>(Graphical browsers and e-mail clients are particularly at risk.)</I>
+      Get the latest releases or an appropriate combo patch either from
+      <A HREF="http://sourceforge.net/project/showfiles.php?group_id=5624"
+      >SourceForge</A> (headings <A HREF=
+      "http://sourceforge.net/project/showfiles.php?group_id=5624&amp;package_id=5683&amp;release_id=257244"
+      >1.2.5-security-patches</A> and <A HREF=
+      "http://sourceforge.net/project/showfiles.php?group_id=5624&amp;package_id=5683&amp;release_id=258110"
+      >1.2.5and-older-sec-patchs</A>)
+      or from <A HREF="ftp://ftp-osl.osuosl.org/pub/libpng/src/">Oregon
+      State's Open Source Lab</A>.
+
+      <P>
+      Here's the <A HREF="http://www.us-cert.gov/cas/techalerts/TA04-217A.html"
+      >CERT advisory</A>, along with the relevant CERT and MITRE vulnerability
+      pages:
+
+      <UL>
+        <LI><B>CERT <A HREF="http://www.kb.cert.org/vuls/id/388984">VU#388984</A></B>
+            (CVE <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2004-0597">CAN-2004-0597</A>)
+            <FONT COLOR="#000000">(this is the <B>serious</B> one!)</FONT>
+        <LI>CERT <A HREF="http://www.kb.cert.org/vuls/id/160448">VU#160448</A>
+            (CVE <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2004-0599">CAN-2004-0599</A>)
+        <LI>CERT <A HREF="http://www.kb.cert.org/vuls/id/236656">VU#236656</A>
+            (CVE <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2004-0598">CAN-2004-0598</A>)
+        <LI>CERT <A HREF="http://www.kb.cert.org/vuls/id/286464">VU#286464</A>
+            (CVE <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2004-0599">CAN-2004-0599</A>)
+        <LI>CERT <A HREF="http://www.kb.cert.org/vuls/id/477512">VU#477512</A>
+            (CVE <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2004-0599">CAN-2004-0599</A>)
+        <LI>CERT <A HREF="http://www.kb.cert.org/vuls/id/817368">VU#817368</A>
+            (CVE <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2004-0597">CAN-2004-0597</A>)
+      </UL>
+
+      <P>
+      These vulnerabilities were discovered by Chris Evans and are also
+      described in <A HREF="http://scary.beasts.org/security/CESA-2004-001.txt"
+      >his alert</A>.  (Many thanks to Chris for notifying the libpng team and
+      for providing time to fix the bugs before the public announcement!)
+
+<!--
+      If you download either libpng source archive,
+      please be sure to download and apply the relevant patches, as well.
+      (Whether your application(s) are actually vulnerable to attack will
+      depend on whether they process images from untrusted third parties - as
+      is the case in web browsers, HTML-capable mail clients, and other
+      networked apps - and possibly on how the apps use libpng.)
+ -->
+
+      </FONT>
+    </TD>
+  </TR>
+</TABLE>
+    </TD>
+  </TR>
+</TABLE>
+
+
+
+
+
+<!--
+              "http://www.winimage.com/pngmmx/pngmmx.htm"
+              "http://www.intel.com/drg/pentiumII/appnotes/916/916.htm"
+              "http://www.intel.com/drg/pentiumII/appnotes/923/923.htm"
+  ==
+              "ftp://ftp.ctd.comsat.com/pub/linux/ELF/libgr-2.0.14.tar.gz"
+              ><B>libgr 2.0.14</B></A>, <A HREF="mailto:neal@ctd.comsat.com"
+              >Neal Becker</A>'s ready-for-Linux collection of standard graphics
+              libraries and apps, including <B>libpng 0.96</B>,
+              <B>zlib 1.0.2</B> and <B>pnmtopng 2.33</B>; 1937k.
+  ==
+      "http://hobbes.nmsu.edu/pub/os2/dev/mm/libpng-1.0.18.zip"  20050808
+ -->
+
+
+<P>
+<HR>
+<UL>
+    <LI><A HREF="./">PNG Home Page</A>
+    <LI><A HREF="png-sitemap.html"><B>Complete PNG Site Map</B></A>
+</UL>
+
+<P>   
+<HR> <!-- ============================================================== -->
+      <A HREF="http://sourceforge.net/projects/png-mng"><IMG WIDTH=80 HEIGHT=15
+       SRC="http://sflogo.sourceforge.net/sflogo.php?group_id=32355&amp;type=9"
+       ALT="[primary site hosted by SourceForge]" BORDER=0 ALIGN="right"></A>
+
+<I>Last modified 12 April 2026.
+Please direct libpng comments and questions to the <A HREF=
+"pngmisc.html#lists"><B>png-mng-implement</B> mailing list</A>.</I>
+
+<P>
+<FONT SIZE="-1"> 
+Web page copyright &#169; 2000-2026 <A HREF="http://gregroelofs.com/">Greg Roelofs</A>.
+<B>libpng</B> copyright &#169; 1995-2026 contributing authors.
+</FONT>
+
+</BODY>
+</HTML>

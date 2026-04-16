@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <title>libmd (Message Digest functions from BSD systems)</title>
+  <meta charset="utf-8" />
+  <meta name="Language" content="English" />
+  <meta name="generator" content="genwebsite 0.0.1" />
+  <meta name="author" content="Guillem Jover" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="author" href="mailto:guillem@hadrons.org" />
+  <link rel="home" href="../.." title="Home" />
+  <link rel="stylesheet" type="text/css" href="../../style.css" />
+</head>
+<body lang="en">
+  <div class="navbar">
+    <span class="navbar-home"><a href="../..">Home</a></span>
+    <span class="navbar-title">libmd (Message Digest functions from BSD systems)</span>
+  </div>
+  <div class="page-content">
+    <p>This library provides message digest functions found on BSD systems either
+on their libc (NetBSD, OpenBSD) or libmd (FreeBSD, DragonflyBSD, macOS,
+Solaris) libraries and lacking on others like GNU systems.</p>
+
+<p>The intention here is to have a library with extremely permissive licenses
+(see below), that can be used by any project; that has a very small scope
+and as such can be part of the base system on most distributions; and that
+has a compatible API with the implementations on other systems and those
+that other projects are embedding, so that they can switch to use the
+system library instead of duplicating the same code all over the place.</p>
+
+<p>The currently provided message digest algorithms are:</p>
+
+<ul>
+<li>MD2</li>
+<li>MD4</li>
+<li>MD5</li>
+<li>RIPEMD-160</li>
+<li>SHA-1</li>
+<li>SHA-2 (SHA-224, SHA-256, SHA-384, SHA-512 and SHA-512/256)</li>
+</ul>
+
+<h2>License</h2>
+
+<p>The code is under the <a href="https://spdx.org/licenses/BSD-3-Clause.html">BSD-3-Clause</a>, <a href="https://spdx.org/licenses/BSD-2-Clause.html">BSD-2-Clause</a>, <a href="https://spdx.org/licenses/ISC.html">ISC</a>,
+<a href="https://spdx.org/licenses/Beerware.html">Beerware</a> and Public Domain licenses.
+Please check the COPYING file and the source code for the actual license
+details.</p>
+
+<h2>Download</h2>
+
+<p>Latest <a href="//archive.hadrons.org/software/libmd/">release tarballs</a>
+also available from the
+<a href="https://libbsd.freedesktop.org/releases/">release tarballs mirror</a>.</p>
+
+<p>Releases are signed with the <a href="https://keys.openpgp.org/vks/v1/by-fingerprint/4F3E74F436050C10F5696574B972BF3EA4AE57A3">OpenPGP certificate</a> (with fingerprint 4F3E74F436050C10F5696574B972BF3EA4AE57A3)
+of the current maintainer <a href="https://www.hadrons.org/~guillem/">Guillem Jover</a>.</p>
+
+<h2>Development</h2>
+
+<p><a href="https://gitlab.freedesktop.org/libbsd/libmd/commits/main"><img src="https://gitlab.freedesktop.org/libbsd/libmd/badges/main/pipeline.svg" alt="CI Status" id="cistatus" /></a>
+<a href="https://scan.coverity.com/projects/guillemj-libmd"><img src="https://img.shields.io/coverity/scan/guillemj-libmd.svg" alt="Coverity Scan Build Status" id="coverityscanbuildstatus" /></a>
+<a href="https://www.bestpractices.dev/projects/4639"><img src="https://www.bestpractices.dev/projects/4639/badge" alt="OpenSSF Best Practices" id="openssfbestpractices" /></a></p>
+
+<p>The code under development can be cloned from git:</p>
+
+<p><code>git clone https://git.hadrons.org/git/libmd.git</code></p>
+
+<p>And browsed using <a href="//git.hadrons.org/cgit/libmd.git">cgit</a>.</p>
+
+<h2>Contact</h2>
+
+<p><a href="https://lists.freedesktop.org/mailman/listinfo/libbsd">Mailing list</a>.</p>
+
+<h3>Security issues</h3>
+
+<p>In case of a security issue that needs to be reported privately, please
+send encrypted mail to <a href="https://www.hadrons.org/~guillem/">Guillem Jover</a>,
+the current maintainer.</p>
+
+<h2>Contributing</h2>
+
+<p>Changes can be sent either as patches to the mailing list or to the current
+maintainer.</p>
+
+<p>New message digest functions can be added depending on the presence of
+these on at least one existing system's libc or libmd.
+The best pre-existing implementation from one of those systems can then
+be considered for an import, taking into account license, code quality,
+portability and performance.</p>
+
+<p>The license should be permissive and not be more restrictive than
+<a href="https://spdx.org/licenses/BSD-3-Clause.html">BSD-3-Clause</a>.</p>
+
+<p>Implementations written from scratch will <strong>not</strong> be accepted.</p>
+
+<p>Any new function must also come with man pages, and at least some minimal
+unit tests.</p>
+
+<h2>Downstreams</h2>
+
+<p><a href="https://repology.org/metapackage/libmd"><img src="https://repology.org/badge/vertical-allrepos/libmd.svg" alt="Packaging status" id="packagingstatus" /></a></p>
+
+  </div>
+
+  <hr class="page-separator" />
+
+  <div class="page-footer">
+    <div class="page-timestamp">
+      Page last built on 2026-02-17 02:39:55.
+    </div>
+    <div class="page-copyright">
+      Copyright © 2001-2026 Guillem Jover
+    </div>
+  </div>
+</body>
+</html>

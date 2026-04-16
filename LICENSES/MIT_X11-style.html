@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>xcb</title>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+<link rel="stylesheet" href="xorg.css" type="text/css" />
+
+<link rel="stylesheet" href="local.css" type="text/css" />
+
+
+<link rel="alternate" type="application/x-wiki" title="Edit this page" href="//secure.freedesktop.org/write/xcb/ikiwiki.cgi?do=edit&amp;page=index" />
+
+
+
+
+
+</head>
+<body>
+
+<div class="page">
+<div class="pageheader">
+<div class="header">
+<span class="logo"><img src="logo.png" /></span>
+
+
+<form method="get" action="https://www.google.com/search" id="searchform">
+ <div>
+  <input name="sitesearch" value="https://xcb.freedesktop.org/" type="hidden" />
+  <input name="q" value="" id="searchbox" size="16" maxlength="255" type="text"
+    placeholder="search" />
+ </div>
+</form>
+
+
+<span class="headerpath">
+<span class="parentlinks">
+
+</span>
+<span class="title">
+xcb
+
+</span>
+</span>
+</div>
+
+
+<span class="actions">
+<ul>
+
+<li><a href="//secure.freedesktop.org/write/xcb/ikiwiki.cgi?do=edit&amp;page=index" rel="nofollow">Edit</a></li>
+
+
+
+<li><a href="https://cgit.freedesktop.org/wiki/xcb/log/index.mdwn">Page History</a></li>
+
+
+<li><a href="https://cgit.freedesktop.org/wiki/xcb/">Repo Info</a></li>
+
+
+
+
+</ul>
+</span>
+
+
+
+
+
+
+</div>
+
+
+
+<div id="pagebody">
+
+<div id="content">
+<h1 id="introduction">Introduction</h1>
+
+<p>The X protocol C-language Binding (XCB) is a replacement for Xlib <a href="./Features/">featuring</a> a small footprint, latency hiding, direct access to the protocol, improved threading support, and extensibility.</p>
+
+<h1 id="news">News</h1>
+
+<p>April 2024: <a href="https://lists.x.org/archives/xorg-announce/2024-April/003506.html">xcb-proto 1.17</a> and <a href="https://lists.x.org/archives/xorg-announce/2024-April/003507.html">libxcb 1.17</a> were released.  In addition to fixing bugs, this adds support for Present 1.4 and DRI3 1.4.</p>
+
+<p>August 2023: <a href="https://lists.x.org/archives/xorg-announce/2023-August/003414.html">xcb-proto 1.16</a> and <a href="https://lists.x.org/archives/xorg-announce/2023-August/003415.html">libxcb 1.16</a> were released.  In addition to fixing bugs, this adds support for DPMS 1.2 and documents some previously implemented X11 extensions.</p>
+
+<p>May 2022: <a href="https://lists.x.org/archives/xorg-announce/2022-May/003163.html">xcb-proto 1.15</a> and <a href="https://lists.x.org/archives/xorg-announce/2022-May/003164.html">libxcb 1.15</a> were released. In addition to fixing bugs, this brings compatibility with check >= 0.15 and enables some new protocols like XI 2.4.</p>
+
+<p>February 2020: <a href="https://lists.x.org/archives/xorg-announce/2020-February/003038.html">xcb-proto 1.14</a> and <a href="https://lists.x.org/archives/xorg-announce/2020-February/003039.html">libxcb 1.14</a> were released. In addition to fixing bugs, this brings compatibility with check >= 0.13 and adds xcb_total_read() and xcb_total_written() APIs.</p>
+
+<p>March 2018: <a href="https://lists.freedesktop.org/archives/xcb/2018-March/011090.html">xcb-proto 1.13</a> and <a href="https://lists.freedesktop.org/archives/xcb/2018-March/011091.html">libxcb 1.13</a> were released. In addition to fixing bugs, this enables new and completed versions of some protocols.</p>
+
+<p>May 2016: <a href="https://lists.x.org/archives/xorg-announce/2016-May/002693.html">xcb-proto 1.12</a> and <a href="https://lists.x.org/archives/xorg-announce/2016-May/002694.html">libxcb 1.12</a> were released.</p>
+
+<p>September 2015: <a href="http://lists.x.org/archives/xorg-announce/2015-September/002633.html">libxcb 1.11.1</a> was released. This fixes some thread-related issues and adds 64-bit versions of some APIs.</p>
+
+<p>August 2014: <a href="http://lists.x.org/archives/xorg-announce/2014-August/002468.html">xcb-proto 1.11</a> and <a href="http://lists.x.org/archives/xorg-announce/2014-August/002469.html">libxcb 1.11</a> were released. This is again mostly a bug-fix release.</p>
+
+<p>December 2013: <a href="http://lists.x.org/archives/xorg-announce/2013-December/002382.html">xcb-proto 1.10</a> and <a href="http://lists.x.org/archives/xorg-announce/2013-December/002383.html">libxcb 1.10</a> were released, this time mainly fixing some API and ABI issues introduced with libxcb 1.9.2. See the linked announcements for more details.</p>
+
+<p>May 2013: <a href="http://lists.x.org/archives/xorg-announce/2013-May/002230.html">libxcb 1.9.1</a> was released, fixing the python code to work with Python 3, and fixing an integer overflow in the read_packet() function (<a href="http://www.x.org/wiki/Development/Security/Advisory-2013-05-23/" title="X.Org Security Advisory: May 23, 2013">CVE-2013-2064</a>)</p>
+
+<p>October 2012: New releases of the XCB packages have been published, including autogenerated man pages for XCB API's - see the linked announcements for full details of what's changed in each one:</p>
+
+<ul>
+<li><a href="http://lists.freedesktop.org/archives/xcb/2012-October/007892.html">xcb-proto 1.8</a></li>
+<li><a href="http://lists.freedesktop.org/archives/xcb/2012-October/007893.html">libxcb 1.9</a></li>
+</ul>
+
+<h1 id="download">Download</h1>
+
+<ul>
+<li>You can obtain released versions of XCB from <a href="http://xcb.freedesktop.org/dist">http://xcb.freedesktop.org/dist</a>.</li>
+<li>Follow the instructions from the <a href="./DevelopersGuide/">developer's guide</a> to build, except that you can use released versions of the dependencies, and you don't need git, automake, autoconf, or libtool.</li>
+</ul>
+
+<h1 id="development">Development</h1>
+
+<ul>
+<li>If you wish to work on XCB, please read the <a href="./DevelopersGuide/">developer's guide</a>.</li>
+<li><strong>Mailing list</strong>: Discussion of XCB and Xlib/XCB is through the <a href="http://lists.freedesktop.org/mailman/listinfo/xcb">XCB mailing list</a>.</li>
+<li><strong>IRC</strong>: XCB developers also hang out on <a href="./IRC/">IRC</a>, and have occasional <a href="./Meetings/">meetings</a>.</li>
+<li>Of course, there's still a lot <a href="./TODO/">to do</a> .</li>
+</ul>
+
+<h1 id="documentation">Documentation</h1>
+
+<ul>
+<li>The <a href="./XcbApi/">XCB API</a> is documented. There is also a <a href="./tutorial/">tutorial</a> and some random <a href="./XcbNotes/">notes</a>.</li>
+<li>People wanting to implement higher level applications can use <a href="./XcbUtil/">xcb-util</a>.</li>
+<li>XCB is built atop an XML description of the X core protocol and common extension protocols called <a href="./XmlXcb/">XML/XCB</a>. This protocol can be used in other interesting ways. Documentation of the X Window System protocol is also available at <a href="http://www.x.org/releases/X11R7.7/doc/index.html#protocol">X.org's website</a>, and can be used in combination with XCB documentation as XCB functions largely reflect the protocol.</li>
+<li>To aid in porting applications, you can configure Xlib to use XCB for the transport layer. We call this <a href="./XlibXcb/">Xlib/XCB</a>.</li>
+<li>There is automatically-generated <a href="http://xcb.freedesktop.org/manual/modules.html">documentation for the XCB protocol bindings</a>.</li>
+<li>The Windows (32 bit) port of XCB will be merged into the main code base soon. You can read more on that <a href="./win32port/">here</a>.</li>
+</ul>
+
+<h1 id="miscellaneous">Miscellaneous</h1>
+
+<ul>
+<li><a href="./KittyLogo/">The XCB logo</a></li>
+<li>The XCB project has a long <a href="./History/">history</a>, during which it has produced many academic <a href="./Publications/">publications</a>. Various projects have <a href="./adoption/">adopted</a> XCB.</li>
+</ul>
+
+</div>
+
+
+
+
+
+</div>
+
+<div id="footer" class="pagefooter">
+
+<div id="pageinfo">
+
+
+
+
+
+
+<div id="backlinks">
+Links:
+
+<a href="./XCBDevelopmentPlan/">XCBDevelopmentPlan</a>
+
+<a href="./XCBToDo/">XCBToDo</a>
+
+<a href="./XcbApi/">XcbApi</a>
+
+<a href="./XmlXcb/">XmlXcb</a>
+
+<a href="./usingxcb/">usingxcb</a>
+
+
+</div>
+
+
+
+
+
+
+<div class="pagedate">
+Last edited <span class="date">Mon Sep 30 03:26:37 2024</span>
+<!-- Created <span class="date">Mon Dec 18 12:11:52 2006</span> -->
+</div>
+
+</div>
+
+
+<!-- from xcb -->
+</div>
+
+</div>
+
+</body>
+</html>

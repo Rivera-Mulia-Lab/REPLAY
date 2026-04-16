@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>fontconfig</title>
+
+<link rel="stylesheet" href="../../style.css" type="text/css" />
+<link rel="stylesheet" href="../../xorg.css" type="text/css" />
+
+<link rel="stylesheet" href="../../local.css" type="text/css" />
+
+
+<link rel="alternate" type="application/x-wiki" title="Edit this page" href="//secure.freedesktop.org/write/www/ikiwiki.cgi?do=edit&amp;page=Software%2Ffontconfig" />
+
+
+
+
+
+</head>
+<body>
+
+<div class="page">
+<div class="pageheader">
+<div class="header">
+<span class="logo"><img src="../../logo.png" /></span>
+
+
+<form method="get" action="https://www.google.com/search" id="searchform">
+ <div>
+  <input name="sitesearch" value="https://www.freedesktop.org/wiki/" type="hidden" />
+  <input name="q" value="" id="searchbox" size="16" maxlength="255" type="text"
+    placeholder="search" />
+ </div>
+</form>
+
+
+<span class="headerpath">
+<span class="parentlinks">
+
+<a href="../../">www</a>/ 
+
+<a href="../">Software</a>/ 
+
+</span>
+<span class="title">
+fontconfig
+
+</span>
+</span>
+</div>
+
+
+<span class="actions">
+<ul>
+
+<li><a href="//secure.freedesktop.org/write/www/ikiwiki.cgi?do=edit&amp;page=Software%2Ffontconfig" rel="nofollow">Edit</a></li>
+
+
+
+<li><a href="https://cgit.freedesktop.org/wiki/www/log/Software/fontconfig.mdwn">Page History</a></li>
+
+
+<li><a href="https://cgit.freedesktop.org/wiki/www/">Repo Info</a></li>
+
+
+
+
+</ul>
+</span>
+
+
+
+
+
+
+</div>
+
+
+
+<div id="pagebody">
+
+<div id="content">
+<h2 id="fontconfig">Fontconfig</h2>
+
+<p>Fontconfig is a library for configuring and customizing font access. </p>
+
+<h3 id="aboutfontconfig">About Fontconfig</h3>
+
+<p>Fontconfig can: </p>
+
+<ul>
+<li>discover new fonts when installed automatically, removing a common source of configuration problems. </li>
+<li>perform font name substitution, so that appropriate alternative fonts can be selected if fonts are missing. </li>
+<li>identify the set of fonts required to completely cover a set of languages. </li>
+<li>have GUI configuration tools built as it uses an XML-based configuration file (though with autodiscovery, we believe this need is minimized). </li>
+<li>efficiently and quickly find the fonts you need among the set of fonts you have installed, even if you have installed thousands of fonts, while minimzing memory usage. </li>
+<li>be used in concert with the X Render Extension and <a href="../FreeType/">FreeType</a> to implement high quality, anti-aliased and subpixel rendered text on a display. </li>
+</ul>
+
+<p>Fontconfig does not: </p>
+
+<ul>
+<li>render the fonts themselves (this is left to <a href="../FreeType/">FreeType</a> or other rendering mechanisms) </li>
+<li>depend on the X Window System in any fashion, so that printer only applications do not have such dependencies </li>
+</ul>
+
+<h3 id="releases">Releases</h3>
+
+<ul>
+<li>The current stable series is 2.17.1.  Releases until 2.16.0 are available in the <a href="http://fontconfig.org/release">release</a> directory and Releases after that are available in the <a href="https://gitlab.freedesktop.org/fontconfig/fontconfig/-/releases">GitLab</a>.</li>
+</ul>
+
+<h3 id="documentation">Documentation</h3>
+
+<ul>
+<li><a href="https://fontconfig.pages.freedesktop.org/fontconfig/fontconfig-user.html">FontConfig User Documentation</a> </li>
+<li><a href="https://fontconfig.pages.freedesktop.org/fontconfig/fontconfig-devel/">FontConfig Developer Documentation</a> </li>
+<li><a href="./About/">About Fontconfig</a> </li>
+<li><a href="./ToDo/">Fontconfig To Do List</a> </li>
+<li><a href="./Devel/">Devel releases</a></li>
+</ul>
+
+<h3 id="gitaccess">Git Access</h3>
+
+<p>The fontconfig <a href="https://gitlab.freedesktop.org/fontconfig/fontconfig">git repository</a> is hosted at freedesktop.org. </p>
+
+<h3 id="mailinglists">Mailing Lists</h3>
+
+<p>The <a href="http://lists.freedesktop.org/mailman/listinfo/fontconfig">Fontconfig mailing list</a> is used for all fontconfig related mail. </p>
+
+<h3 id="bugreport">Bug report</h3>
+
+<p>If you have encountered any issues regarding to Fontconfig, please file a bug report at <a href="https://gitlab.freedesktop.org/fontconfig/fontconfig/issues">GitLab issue tracker</a></p>
+
+<h3 id="webfonts">Web fonts</h3>
+
+<p>Microsoft has made the <a href="http://fontconfig.org/webfonts">common web fonts</a> available free of charge; please read the license before downloading them.  </p>
+
+<p>Redhat has made <a href="https://www.redhat.com/promo/fonts/">free fonts</a> (GPL+exception)  available: <em>Sans</em> (a substitute for Arial, Albany, Helvetica, Nimbus Sans L, and Bitstream Vera Sans), <em>Serif</em> (a substitute for Times New Roman, Thorndale, Nimbus Roman, and Bitstream Vera Serif) and <em>Mono</em> (a substitute for Courier New, Cumberland, Courier, Nimbus Mono L, and Bitstream Vera Sans Mono). </p>
+
+</div>
+
+
+
+
+
+</div>
+
+<div id="footer" class="pagefooter">
+
+<div id="pageinfo">
+
+
+
+
+
+
+<div id="backlinks">
+Links:
+
+<a href="../Fonts/">Fonts</a>
+
+<a href="../">Software</a>
+
+<a href="./ToDo/">fontconfig/ToDo</a>
+
+
+</div>
+
+
+
+
+
+
+<div class="pagedate">
+Last edited <span class="date">Wed Jan 28 07:58:59 2026</span>
+<!-- Created <span class="date">Sat May 18 07:33:27 2013</span> -->
+</div>
+
+</div>
+
+
+<!-- from www -->
+</div>
+
+</div>
+
+</body>
+</html>
