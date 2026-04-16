@@ -110,9 +110,10 @@ Using the GUI:
     
         Configuration tab allows for the definition of custom genomes, contigs, masking, normalization options, and window sizes
      
-        Advanced Settings tab allows for additional smoothing options, defining snakemake latency, and to unlock the snakemake directory if a crash occurs.
+        Advanced Settings tab allows for additional smoothing options, defining snakemake latency, and to unlock the snakemake
+        directory if a crash occurs.
     
-8.  Define Files
+9.  Define Files
     
         Click the Scan + Autopopulate Button
     
@@ -123,15 +124,16 @@ Using the GUI:
      
         The app will automatically check to see if the file naming is correct.
     
-9.  Copy or Link the Files
+10.  Copy or Link the Files
 
         Pressing the "Copy" button will copy your files from the "Raw Reads Folder" to the "Pipeline Reads Folder"
      
         Pressing the "Symlink" button will create a link to your files in the "Pipeline Reads Folder"
      
-        If your "Raw Reads Folder" and "Pipeline Reads Folder" are the same, you can use the rename button to rename your original files.
+        If your "Raw Reads Folder" and "Pipeline Reads Folder" are the same, you can use the rename button to rename your
+        original files.
      
-10.  Run
+12.  Run
     
          Press "Check Required Files" to ensure everything is correct.
      
@@ -139,7 +141,7 @@ Using the GUI:
      
          Check on the status with the progress bar and by expanding the "Application Log"
      
-11. QC Analysis
+13. QC Analysis
     
         After running is complete, the "Results" tab will contain QC images for each sample and filepaths for the data.
 
