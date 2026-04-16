@@ -49,14 +49,18 @@ x86-64 architecture
 > Windows:
 >
 > Install Windows Subsystem for Linux (WSL)
+> 
 >     Can be installed through the Microsoft Store
 >     or Open Command Prompt and type wsl --install
+> 
 > Run replay.bat
 > 
 > macOS:
 >
 > Download Parallels Desktop from the Mac App Store
+> 
 > Open Parallels Desktop and Click "+", Free Systems, Select Ubuntu, and Download
+> 
 > In the VM, navigate to the REPLAY folder and double-click REPLAY
 > 
 > 
