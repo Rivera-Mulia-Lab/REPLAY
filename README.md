@@ -32,8 +32,11 @@ Processor (CPU): x86-64 architecture. Minimum 2 cores. 6 cores or higher recomme
 Memory (RAM): 10 GB minimum. 32 GB or higher is recommended for processing large mammalian genomes (e.g., human or mouse) at high resolutions ($<10\text{ kb}$ bins).
 
 Storage: 
-- Containers: ~1 GB for the Apptainer/Singularity image (downloaded once).
-- Data: Variable (depends on FASTQ size).
+- Containers: ~1 GB for the executable and Apptainer/Singularity image.
+- Genome + Index: ~8.3 GB for hg38
+- Input Data: Variable (depends on FASTQ size).
+- Output Data: Assume at least ~13x input for intermediate files. e.g. 1.21GB fastq.gz -> 14.8GB trimmed reads/bam/bedgraphs
+  
 
 
 1\. Download REPLAY
@@ -91,7 +94,8 @@ Using the GUI:
 
 5.  Set Configuration: Genome and Analysis
     
-        Use buttons to download human and mouse genomes. This will take some minutes depending on the internet connection speed.
+        Use buttons to download the human and mouse genomes. This will take some minutes depending on the internet connection
+        speed and processor.
     
         Use Presets for each genome after they are downloaded.
     
@@ -99,7 +103,7 @@ Using the GUI:
     
         Set Smoothing and Normalization options
     
-6.  Set Configuration: System Resources
+7.  Set Configuration: System Resources
     
         By default, 12GB of memory and 2 cores are used
     
@@ -107,9 +111,10 @@ Using the GUI:
     
         At least 10GB of memory is required for human genome alignment.
     
-7.  Apply Advanced Configuration and Settings
+8.  Apply Advanced Configuration and Settings
     
-        Configuration tab allows for the definition of custom genomes, contigs, masking, normalization options, and window sizes
+        Configuration tab allows for the definition of custom genomes, contigs, masking, normalization options, and window
+        sizes
      
         Advanced Settings tab allows for additional smoothing options, defining snakemake latency, and to unlock the snakemake
         directory if a crash occurs.
