@@ -43,6 +43,9 @@ Storage:
 
 [<u>https://github.com/Rivera-Mulia-Lab/REPLAY/</u>](https://github.com/Rivera-Mulia-Lab/REPLAY/)
 
+The files REPLAY (the executable) and snakemake_repliseq.sif must be downloaded separately and placed into
+the folder due to their size.
+
 2\. Launch the application
 
 > Linux:
