@@ -558,11 +558,14 @@ rule align:
         
         command = "bwa mem -v 2 -t 8 "+genome+".fa '{input.clip}' > '{output}'"
         command = command[0]
-        
+        input_str = "'"
+        for value in input.clip:
+            input_str = input_str+value+"' '"
+        input_str = input_str[0:-2]
         
         if len(config['reads']) > 1:
             #shell("bwa mem -v 2 -t 8 "+genome+" '{input.clip}' > '{output}.bam'")
-            shell("bwa mem -v 2 -t 8 "+genome+".fa '{input.clip}' > '{output}.bam'")
+            shell("bwa mem -v 2 -t 8 "+genome+".fa "+input_str+" > '{output}.bam'")
             shell("samtools fixmate -m '{output}.bam' '{output}'")
             shell("rm '{output}.bam'")
         else:
