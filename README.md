@@ -46,6 +46,8 @@ Storage:
 The files REPLAY (the executable) and snakemake_repliseq.sif must be downloaded separately and placed into
 the folder due to their size.
 
+ENSURE NO SPACES IN FILEPATH
+
 2\. Launch the application
 
 > Linux:
