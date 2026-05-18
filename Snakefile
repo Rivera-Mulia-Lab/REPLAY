@@ -89,7 +89,7 @@ rule all:
 rule raw_and_acfplot:
     resources:        
         threads=1,
-        mem_mb=4000,
+       
         runtime=60
     input:
         output_folder+'bg/log2/{desc}_{rep}_{sizes}_'+genomeid+'_log2RT.bg',
@@ -151,7 +151,7 @@ rule combine_figures:
         png = output_folder+'figures/read_count/reads.png',
     threads: 1
     resources:
-        mem_mb=4000,
+        
         runtime=60
         
     run:
@@ -225,7 +225,7 @@ rule rawKDE:
 
     threads: 1
     resources:
-        mem_mb=4000,
+        
         runtime=60
     run:
         df = pd.DataFrame()
@@ -251,7 +251,7 @@ rule KDElog2Plot:
         png = output_folder+'figures/log2/log2RT_kdeplot.png',
     threads: 1
     resources:
-        mem_mb=4000,
+        
         runtime=60
     run:
         df = pd.DataFrame()
@@ -290,7 +290,7 @@ rule plot_read_counts:
         csv = output_folder+'figures/read_count/all/raw/{desc}_{rep}_{EL}.csv'
     threads: 1
     resources:
-        mem_mb=16000,
+        
         runtime=60
     
         
@@ -334,7 +334,7 @@ rule plot_window_counts:
         svg = output_folder+'figures/windows/window_counts.svg',
     threads: 1
     resources:
-        mem_mb=4000,
+       
         runtime=60
     
     run:
@@ -407,7 +407,7 @@ rule cutadapt:
         #'clip/{sample}.clip'
     threads: 4
     resources:
-        mem_mb=64000,
+        
         runtime=480
     run:
         #print(len(config['reads']))
@@ -447,9 +447,9 @@ rule genome_unzip:
         expand(genome+'.fa.gz'),
     output:
         expand(genome+'.fa'),
-    threads: 1
+    
     resources:
-        mem_mb=8000,
+       
         runtime=120
         
     shell:
@@ -462,9 +462,8 @@ rule genome_index:
         expand(genome+'.fa'),
     output:
         expand(genome+'.fa.amb'),
-    threads: 1
-    resources:
-        mem_mb=64000    
+    
+       
     run:
         shell("bwa index '{input}'"),
 
@@ -475,10 +474,9 @@ rule faidx:
         fa=expand(genome+'.fa'),
     output:        
         expand(genome+'.fa.fai'),
+       
+    
         
-    threads: 4
-    resources:
-        mem_mb=16000    
     run:
         
         fa = str(input.fa)
@@ -490,8 +488,7 @@ rule sizes:
     output:
         sizes = expand(genome+'.fa.fai.sizes'),
     threads: 1
-    resources:
-        mem_mb=8000    
+       
     run:
         shell("cut -f1,2 '{input}' > '{output.sizes}'")
         
@@ -505,7 +502,7 @@ rule makewindows:
         file = expand(output_folder+'bed/{sizes}_windows_'+genomeid+'.bed', sizes = config['window_sizes']),
     threads: 1
     resources:
-        mem_mb=8000,
+       
         runtime=60
         
     run:
@@ -560,9 +557,9 @@ rule align:
     resources:
         tasks=1,
         cpus_per_task=8,
-        mem_mb=128000,
+        
         runtime=960,
-        disk_mb = 128000
+       
     run:
         
         
@@ -592,7 +589,7 @@ rule bamstats:
         output_folder+'bam/stats/raw/{desc}_{rep}_{EL}.bamstats',
     threads: 1
     resources:
-        mem_mb=8000,
+        
         runtime=60
     shell:
         "samtools stats '{input}' > '{output}'"
@@ -606,7 +603,7 @@ rule filterbam:
         
     threads: 1
     resources:
-        mem_mb=8000,
+        
         runtime=60
     shell:
         "samtools view -bhq 20 '{input}' -o '{output}'"
@@ -663,17 +660,17 @@ rule contigbam:
         output_folder+'bam/sorted/{desc}_{rep}_{EL}.sorted',
     threads: 1
     resources:
-        mem_mb=16000,
+      
         runtime=60
     run: 
         contigs_list = config['contigs']
         with open('contigs.temp.txt', 'w') as f:
             f.write('\n'.join(contigs_list))
-        shell("samtools sort -m 10G '{input}' -o '{output}.allcontigs.tmp'"),
+        shell("samtools sort -m {resources.mem_mb} '{input}' -o '{output}.allcontigs.tmp'"),
         shell("samtools index '{output}.allcontigs.tmp'"),
         #shell('samtools view -bh {output}.allcontigs.tmp $(cat contigs.temp.txt | tr "\n" " ") > {output}.tmp'),
         shell("samtools view -bh '{output}.allcontigs.tmp' "+" ".join(contigs_list)+"> '{output}.tmp'"),
-        shell("samtools sort -m 10G '{output}.tmp' -o '{output}'"),
+        shell("samtools sort -m {resources.mem_mb} '{output}.tmp' -o '{output}'"),
         shell("samtools index '{output}'"),
         shell("rm '{output}.allcontigs.tmp'"),
 
@@ -692,7 +689,7 @@ rule fbstats:
         output_folder+'bam/stats/fbstats/{desc}_{rep}_{EL}.fbstats',
     threads: 1
     resources:
-        mem_mb=16000,
+        
         runtime=60
 
     shell:
@@ -708,7 +705,7 @@ rule rmdup:
         
     threads: 1
     resources:
-        mem_mb=16000,
+        
         runtime=60
     run:
         shell("mkdir -p '"+output_folder+"bam/rmdup'"),
@@ -723,7 +720,7 @@ rule rmdup_stats:
         
     threads: 1
     resources:
-        mem_mb=16000,
+        
         runtime=60
     shell:
         "samtools stats '{input}' > '{output}'"
@@ -739,7 +736,7 @@ rule rpkm:
         output_path=output_folder+'bg/rpkm/{desc}_{rep}_{EL}_{sizes}_'+genomeid+'_rpkm.bg',
     threads: 1
     resources:
-        mem_mb=16000,
+        
         runtime=60
     run:
         import subprocess
@@ -808,7 +805,7 @@ rule normalize_smooth_rt:
         smooth=lambda wc: config["rt_processing"].get("smoothing", {}),
     threads: 1
     resources:
-        mem_mb=16000,
+        
         runtime=120
     script:
         "scripts/normalize_smooth_rt.py"
@@ -821,7 +818,7 @@ rule log:
         output_folder+'bg/log2/{desc}_{rep}_{sizes}_'+genomeid+'_log2RT.bg',
     threads: 1
     resources:
-        mem_mb=16000,
+        
         runtime=60
     run:
         shell(r"paste '{input.early}' '{input.late}' | awk '{{if($8 != 0 && $4 != 0){{print$1,$2,$3,log($4/$8)/log(2)}}}}' OFS='\t' > '{output}.tmp'")
