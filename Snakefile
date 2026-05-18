@@ -87,10 +87,6 @@ rule all:
         
         
 rule raw_and_acfplot:
-    resources:        
-        threads=1,
-       
-        runtime=60
     input:
         output_folder+'bg/log2/{desc}_{rep}_{sizes}_'+genomeid+'_log2RT.bg',
 
@@ -101,6 +97,10 @@ rule raw_and_acfplot:
         png_raw = output_folder+'figures/raw/10Mb/{desc}_{rep}_{sizes}_'+genomeid+'_log2RT_10Mb_raw.png',
         svg_raw_2Mb = output_folder+'figures/raw/2Mb/{desc}_{rep}_{sizes}_'+genomeid+'_log2RT_2Mb_raw.svg',
         png_raw_2Mb = output_folder+'figures/raw/2Mb/{desc}_{rep}_{sizes}_'+genomeid+'_log2RT_2Mb_raw.png',
+    #threads:1
+    resources:
+        threads=1,
+        runtime=60,
     
     
     run:
@@ -149,11 +149,10 @@ rule combine_figures:
     output:
         svg = output_folder+'figures/read_count/reads.svg',
         png = output_folder+'figures/read_count/reads.png',
-    threads: 1
+    
     resources:
-        
-        runtime=60
-        
+        threads=1,
+        runtime=60,
     run:
         combineddf = pd.DataFrame()
         for figure in input:
@@ -223,10 +222,10 @@ rule rawKDE:
     output:
         png = output_folder+'figures/raw/{desc}_{rep}_{sizes}_'+genomeid+'_log2RT_rawkdeplot.png',
 
-    threads: 1
+
     resources:
-        
-        runtime=60
+        threads=1,
+        runtime=60,
     run:
         df = pd.DataFrame()
         
@@ -249,10 +248,10 @@ rule KDElog2Plot:
     output:
         svg = output_folder+'figures/log2/log2RT_kdeplot.svg',
         png = output_folder+'figures/log2/log2RT_kdeplot.png',
-    threads: 1
+
     resources:
-        
-        runtime=60
+        threads=1,
+        runtime=60,
     run:
         df = pd.DataFrame()
         sizes = config['window_sizes']
@@ -288,10 +287,10 @@ rule plot_read_counts:
         png = output_folder+'figures/read_count/all/{desc}_{rep}_{EL}.png',
         svg = output_folder+'figures/read_count/all/{desc}_{rep}_{EL}.svg',
         csv = output_folder+'figures/read_count/all/raw/{desc}_{rep}_{EL}.csv'
-    threads: 1
+
     resources:
-        
-        runtime=60
+        threads=1,
+        runtime=60,
     
         
     run:
@@ -332,10 +331,10 @@ rule plot_window_counts:
     output:
         png = output_folder+'figures/windows/window_counts.png',
         svg = output_folder+'figures/windows/window_counts.svg',
-    threads: 1
+
     resources:
-       
-        runtime=60
+        threads=1,
+        runtime=60,
     
     run:
         plotdf = pd.DataFrame()
@@ -405,10 +404,10 @@ rule cutadapt:
         txt=output_folder+'clip/{desc}_{rep}_{EL}_{reads}.txt',
         #clip = expand('clip/{sample}.clip', sample = config["samples"]),
         #'clip/{sample}.clip'
-    threads: 4
+
     resources:
-        
-        runtime=480
+        threads=4,
+        runtime=480,
     run:
         #print(len(config['reads']))
         #print(input)
@@ -449,8 +448,8 @@ rule genome_unzip:
         expand(genome+'.fa'),
     
     resources:
-       
-        runtime=120
+        threads=1,
+        runtime=120,
         
     shell:
         "gunzip -c '{input}' > '{output}'"
@@ -500,10 +499,10 @@ rule makewindows:
         #sizes = expand('{sizes}', sizes = config['window_sizes'])
     output:
         file = expand(output_folder+'bed/{sizes}_windows_'+genomeid+'.bed', sizes = config['window_sizes']),
-    threads: 1
+
     resources:
-       
-        runtime=60
+        threads=1,
+        runtime=60,
         
     run:
         commands = expand("bedtools makewindows -w {sizes} -s {sizes} -g {{input}} > '"+output_folder+"bed/{sizes}_windows_"+genomeid+".bed'", sizes = config['window_sizes'])
@@ -553,11 +552,10 @@ rule align:
     output:
         output_folder+'bam/raw/{desc}_{rep}_{EL}.bam',
         #'samples/{desc}_{rep}_{EL}_{reads}.fastq.gz',
-    threads: 8
     resources:
         tasks=1,
         cpus_per_task=8,
-        
+        threads=8,
         runtime=960,
        
     run:
@@ -587,10 +585,9 @@ rule bamstats:
         output_folder+'bam/raw/{desc}_{rep}_{EL}.bam',
     output:
         output_folder+'bam/stats/raw/{desc}_{rep}_{EL}.bamstats',
-    threads: 1
     resources:
-        
-        runtime=60
+        threads=1,
+        runtime=60,
     shell:
         "samtools stats '{input}' > '{output}'"
 
@@ -600,11 +597,9 @@ rule filterbam:
         output_folder+'bam/raw/{desc}_{rep}_{EL}.bam',
     output:
         output_folder+'bam/filtered/{desc}_{rep}_{EL}.filtered',
-        
-    threads: 1
     resources:
-        
-        runtime=60
+        threads=1,
+        runtime=60,
     shell:
         "samtools view -bhq 20 '{input}' -o '{output}'"
 
@@ -658,19 +653,18 @@ rule contigbam:
         output_folder+'bam/filtered/{desc}_{rep}_{EL}.filtered',
     output:        
         output_folder+'bam/sorted/{desc}_{rep}_{EL}.sorted',
-    threads: 1
     resources:
-      
-        runtime=60
+        threads=1,
+        runtime=60,
     run: 
         contigs_list = config['contigs']
         with open('contigs.temp.txt', 'w') as f:
             f.write('\n'.join(contigs_list))
-        shell("samtools sort -m {resources.mem_mb} '{input}' -o '{output}.allcontigs.tmp'"),
+        shell("samtools sort -m {resources.mem_mb}M '{input}' -o '{output}.allcontigs.tmp'"),
         shell("samtools index '{output}.allcontigs.tmp'"),
         #shell('samtools view -bh {output}.allcontigs.tmp $(cat contigs.temp.txt | tr "\n" " ") > {output}.tmp'),
         shell("samtools view -bh '{output}.allcontigs.tmp' "+" ".join(contigs_list)+"> '{output}.tmp'"),
-        shell("samtools sort -m {resources.mem_mb} '{output}.tmp' -o '{output}'"),
+        shell("samtools sort -m {resources.mem_mb}M '{output}.tmp' -o '{output}'"),
         shell("samtools index '{output}'"),
         shell("rm '{output}.allcontigs.tmp'"),
 
@@ -687,10 +681,9 @@ rule fbstats:
         output_folder+'bam/sorted/{desc}_{rep}_{EL}.sorted',
     output:
         output_folder+'bam/stats/fbstats/{desc}_{rep}_{EL}.fbstats',
-    threads: 1
     resources:
-        
-        runtime=60
+        threads=1,
+        runtime=60,
 
     shell:
         "samtools stats '{input}' > '{output}'"
@@ -703,10 +696,9 @@ rule rmdup:
     output:
         output_folder+'bam/rmdup/{desc}_{rep}_{EL}_rmdup.bam',
         
-    threads: 1
     resources:
-        
-        runtime=60
+        threads=1,
+        runtime=60,
     run:
         shell("mkdir -p '"+output_folder+"bam/rmdup'"),
         shell("samtools markdup -r '{input}' '{output}'")
@@ -717,11 +709,9 @@ rule rmdup_stats:
         output_folder+'bam/rmdup/{desc}_{rep}_{EL}_rmdup.bam',        
     output:
         output_folder+'bam/stats/rmdup/{desc}_{rep}_{EL}.rdbamstats',
-        
-    threads: 1
     resources:
-        
-        runtime=60
+        threads=1,
+        runtime=60,
     shell:
         "samtools stats '{input}' > '{output}'"
 
@@ -734,10 +724,9 @@ rule rpkm:
         windows = output_folder+'bed/{sizes}_windows_'+genomeid+'.bed',
     output:
         output_path=output_folder+'bg/rpkm/{desc}_{rep}_{EL}_{sizes}_'+genomeid+'_rpkm.bg',
-    threads: 1
     resources:
-        
-        runtime=60
+        threads=1,
+        runtime=60,
     run:
         import subprocess
 
@@ -803,10 +792,9 @@ rule normalize_smooth_rt:
         clip_max=lambda wc: config["rt_processing"].get("clip_max", 8),
         bin_size_map=lambda wc: config["rt_processing"].get("bin_size_map", {}),
         smooth=lambda wc: config["rt_processing"].get("smoothing", {}),
-    threads: 1
     resources:
-        
-        runtime=120
+        threads=1,
+        runtime=120,
     script:
         "scripts/normalize_smooth_rt.py"
         
@@ -816,10 +804,9 @@ rule log:
         late = output_folder+'bg/rpkm/{desc}_{rep}_L_{sizes}_'+genomeid+'_rpkm.bg',
     output:
         output_folder+'bg/log2/{desc}_{rep}_{sizes}_'+genomeid+'_log2RT.bg',
-    threads: 1
     resources:
-        
-        runtime=60
+        threads=1,
+        runtime=600,
     run:
         shell(r"paste '{input.early}' '{input.late}' | awk '{{if($8 != 0 && $4 != 0){{print$1,$2,$3,log($4/$8)/log(2)}}}}' OFS='\t' > '{output}.tmp'")
         shell("cp '{output}.tmp' '{output}'")
