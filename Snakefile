@@ -412,23 +412,25 @@ rule cutadapt:
     run:
         #print(len(config['reads']))
         #print(input)
+        output_string = output.clip
+        input_string = input
         if len(config['reads']) > 1:
             if '_R1.fastq' in str(input):
-                #print("r1")
-                shell("cutadapt -a "+barcode1+" -q 0 -O 1 -m 0 -j 0 -o '{output.clip}' '{input}'")
+                #print("r1")                
+                shell("cutadapt -a "+barcode1+" -q 0 -O 1 -m 0 -j 0 -o '"+output_string+"' '"+input_string+"'")
                 with open(str(output.txt), 'w') as f:
                      f.write("clip success")
                 f.close()
 
             if '_R2.fastq' in str(input):
                 #print("r2")
-                shell("cutadapt -a "+barcode2+" -q 0 -O 1 -m 0 -j 0 -o '{output.clip}' '{input}'")
+                shell("cutadapt -a "+barcode2+" -q 0 -O 1 -m 0 -j 0 -o '"+output_string+"' '"+input_string+"'")
                 with open(str(output.txt), 'w') as f:
                      f.write("clip success")
                 f.close()
         
         else:
-            shell("cutadapt -a "+barcode1+" -q 0 -O 1 -m 0 -j 0 -o '{output.clip}' '{input}'")
+            shell("cutadapt -a "+barcode1+" -q 0 -O 1 -m 0 -j 0 -o '"+output_string+"' '"+input_string+"'")
             with open(str(output.txt), 'w') as f:
                 f.write("clip success")
             f.close()
